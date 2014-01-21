@@ -12,28 +12,24 @@ int sock_lan; //连接
 struct ifreq if_lan; //网络接口
 void find_lan(char *interface) { //打开lan连接
 	if ((sock_lan = socket(PF_PACKET, SOCK_RAW, htons(0x888e))) < 0) { //建立连接
-		perror("LAN socket() error"); //出错提示
-		exit(1); //错误退出
+		error("LAN socket() error"); //出错提示
 	}
 	strcpy(if_lan.ifr_name, interface); //指定lan接口
 	printf("\tLAN interface: %s\n", if_lan.ifr_name);
 	if (ioctl(sock_lan, SIOCGIFINDEX, &if_lan) < 0) { //查找接口
-		perror("LAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("LAN ioctl() error"); //出错提示
 	}
 	struct sockaddr_ll sll_lan;
 	sll_lan.sll_family = AF_PACKET; //设置lan协议族
 	sll_lan.sll_ifindex = if_lan.ifr_ifindex; //设置lan接口
 	sll_lan.sll_protocol = htons(0x888e); //设置lan协议类型
 	if (bind(sock_lan, (struct sockaddr *) &sll_lan, sizeof(sll_lan)) < 0) { //将接口与地址绑定
-		perror("LAN bind() error"); //出错提示
-		exit(1); //錯誤退出
+		error("LAN bind() error"); //出错提示
 	}
 }
 void open_lan(void) {
 	if(ioctl(sock_lan, SIOCGIFFLAGS, &if_lan)<0){//准备混杂模式
-		perror("LAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("LAN ioctl() error"); //出错提示
 	}
 	if(promiscuous!=0){//混杂模式
 		if_lan.ifr_flags |= IFF_PROMISC;//混杂模式
@@ -41,12 +37,10 @@ void open_lan(void) {
 		if_lan.ifr_flags &=~ IFF_PROMISC;//非混杂模式
 	}
 	if(ioctl(sock_lan, SIOCGIFFLAGS, &if_lan)<0){//以混杂模式打开网卡
-		perror("LAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("LAN ioctl() error"); //出错提示
 	}
 	if (ioctl(sock_lan, SIOCGIFHWADDR, &if_lan) < 0) { //查询mac
-		perror("LAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("LAN ioctl() error"); //出错提示
 	}
 	memcpy(mac_lan, if_lan.ifr_hwaddr.sa_data, 6); //获得mac地址
 	printf("\tLAN MAC address: %02x-%02x-%02x-%02x-%02x-%02x\n", mac_lan[0],
@@ -67,8 +61,7 @@ void send_lan(unsigned char *buffer, int length) { //lan发包
 		memcpy(buffer + 6, mac_lan, 6);	//修改src为lan
 	}
 	if (sendto(sock_lan, buffer, length, 0, NULL, 0) < 0) {
-		perror("LAN sendto() error");	//错误提示
-		exit(1);	//错误退出
+		error("LAN sendto() error");	//错误提示
 	}
 }
 void work_lan(void) { //lan线程

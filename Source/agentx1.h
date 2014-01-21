@@ -48,6 +48,8 @@ int size_echo;
 unsigned char data_echo[1024]; //重复包
 int size_temp;
 unsigned char data_temp[1024]; //临时包
+//MAIN
+void error(char *message);//出错退出
 //LAN
 void find_lan(char *interface); //打开lan连接
 void send_lan(unsigned char *buffer, int length); //lan发包

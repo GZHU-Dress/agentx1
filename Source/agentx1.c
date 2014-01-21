@@ -12,7 +12,7 @@ void about(void) { //显示软件产品相关信息
 	puts("Agent X One [Version: 2]");
 	puts("Homepage: https://bitbucket.org/CrazyBoyFeng/agentx1");	//为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://www.gnu.org/licenses/gpl.html");//衍生请不要修改协议
-	puts("Copyright (C) 2013 Crazy Boy Feng. All rights reserved.");//狂男风
+	puts("Copyright (C) 2013-2014 Crazy Boy Feng. All rights reserved.");//狂男风
 	puts("This is dedicated to my friends, for the passing good times...");//非常希望这句话在各种衍生中也能够得以保留
 }
 void help(void) { //显示帮助相关信息
@@ -30,8 +30,7 @@ void help(void) { //显示帮助相关信息
 void check(void){
 	int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
 	if (file < 0) {//创建失败
-		perror("open() error");//输出错误
-		exit(1);//错误退出
+		error("open() error");//输出错误
 	}
 	struct flock file_lock;//锁结构
 	file_lock.l_start = 0;//起始位置
@@ -40,8 +39,7 @@ void check(void){
 	file_lock.l_type = F_WRLCK;//标志位
 	file_lock.l_pid = getpid();//pid
 	if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
-		perror("fcntl() error");//写入失败
-		exit(1);//错误退出
+		error("fcntl() error");//写入失败
 	}
 }
 void config(int argc, char **argv) { //配置
@@ -172,6 +170,10 @@ void config(int argc, char **argv) { //配置
 		break;
 	}
 }
+void error(char *msg){
+	perror(msg);//输出错误
+	exit(1);//错误退出
+}
 int main(int argc, char **argv) { //主函数
 	config(argc, argv); //初始化参数
 	puts("Turning the work mode to Initialization...");
@@ -181,10 +183,9 @@ int main(int argc, char **argv) { //主函数
 	unsigned long int tid_lan, tid_wan;	//线程
 	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL ) < 0
 			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL ) < 0) { //创建线程
-		perror("pthread_create() error"); //出错提示
-		exit(1); //错误退出
+		error("pthread_create() error"); //出错提示
 	}
-	while (1) { //无限循环
+	while (1) { //无限循环 TODO 使用计时器替代循环
 		sleep(interval/2);
 		if (state != X_RE) { //判断状态是否应该中继
 			continue; //继续循环

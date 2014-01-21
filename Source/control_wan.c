@@ -12,35 +12,30 @@ int sock_wan; //连接
 struct ifreq if_wan; //网络接口
 void find_wan(char *interface) { //建立wan连接
 	if ((sock_wan = socket(PF_PACKET, SOCK_RAW, htons(0x888e))) < 0) { //建立连接
-		perror("WAN socket() error"); //出错提示
-		exit(1); //错误退出
+		error("WAN socket() error"); //出错提示
 	}
 	strcpy(if_wan.ifr_name, interface); //指定wan接口
 	printf("\tWAN interface: %s\n", if_wan.ifr_name);
 	if (ioctl(sock_wan, SIOCGIFINDEX, &if_wan) < 0) { //控制接口
-		perror("WAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("WAN ioctl() error"); //出错提示
 	}
 	struct sockaddr_ll sll_wan; //地址
 	sll_wan.sll_family = AF_PACKET; //设置wan协议族
 	sll_wan.sll_ifindex = if_wan.ifr_ifindex; //设置wan接口
 	sll_wan.sll_protocol = htons(0x888e); //设置wan协议类型
 	if (bind(sock_wan, (struct sockaddr *) &sll_wan, sizeof(sll_wan))) { //将接口与地址绑定
-		perror("WAN bind() error"); //出错提示
-		exit(1); //錯誤退出
+		error("WAN bind() error"); //出错提示
 	}
 }
 void print_wan(void) { //取出并打印地址
 	if (ip_wan == 0 || netmask_wan == 0) {
 		if (ioctl(sock_wan, SIOCGIFADDR, &if_wan) < 0) { //控制接口
-			perror("WAN ioctl() error"); //出错提示
-			exit(1); //錯誤退出
+			error("WAN ioctl() error"); //出错提示
 		}
 		ip_wan = ((struct sockaddr_in *) &if_wan.ifr_addr)->sin_addr.s_addr; //得到IP
 
 		if (ioctl(sock_wan, SIOCGIFNETMASK, &if_wan) < 0) { //控制接口
-			perror("WAN ioctl() error"); //出错提示
-			exit(1); //錯誤退出
+			error("WAN ioctl() error"); //出错提示
 		}
 		netmask_wan =
 				((struct sockaddr_in *) &if_wan.ifr_addr)->sin_addr.s_addr; //得到掩码
@@ -74,8 +69,7 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 }
 void open_wan(void) { //获得mac
 	if(ioctl(sock_wan, SIOCGIFFLAGS, &if_wan)<0){//准备混杂模式
-		perror("WAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("WAN ioctl() error"); //出错提示
 	}
 	if(promiscuous==2){//双向混杂模式
 		if_wan.ifr_flags |= IFF_PROMISC;//混杂模式
@@ -83,12 +77,10 @@ void open_wan(void) { //获得mac
 		if_wan.ifr_flags &=~ IFF_PROMISC;//混杂模式
 	}
 	if(ioctl(sock_wan, SIOCGIFFLAGS, &if_wan)<0){//以混杂模式打开网卡
-		perror("WAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("WAN ioctl() error"); //出错提示
 	}
 	if (ioctl(sock_wan, SIOCGIFHWADDR, &if_wan) < 0) { //查询mac
-		perror("WAN ioctl() error"); //出错提示
-		exit(1); //錯誤退出
+		error("WAN ioctl() error"); //出错提示
 	}
 	memcpy(mac_wan, if_wan.ifr_hwaddr.sa_data, 6); //获得mac地址
 	printf("\tWAN MAC address: %02x-%02x-%02x-%02x-%02x-%02x\n", mac_wan[0],
@@ -107,8 +99,7 @@ void send_wan(unsigned char *buffer, int length) {	//wan发包
 	}
 	memcpy(buffer + 6, mac_wan, 6);	//修改src为wan
 	if (sendto(sock_wan, buffer, length, 0, NULL, 0) < 0) {
-		perror("WAN sendto() error");	//错误提示
-		exit(1);	//错误退出
+		error("WAN sendto() error");	//错误提示
 	}
 }
 void work_wan(void) { //wan线程
