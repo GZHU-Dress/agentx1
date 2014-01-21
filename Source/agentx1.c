@@ -9,7 +9,7 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 1]");
+	puts("Agent X One [Version: 2]");
 	puts("Homepage: http://ref.so/h0gz3");	//为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://ref.so/if4yh");//衍生请不要修改协议
 	puts("Copyright (C) 2013 Crazy Boy Feng. All rights reserved.");//狂男风
@@ -143,8 +143,8 @@ void config(int argc, char **argv) { //配置
 	}
 	find_lan(lan); //打开网卡
 	find_wan(wan); //打开网卡
-	printf("\tPromiscious mode: ");
-	switch (promiscuous % 3) { //比较promiscious_lan
+	printf("\tPromiscUous mode: ");
+	switch (promiscuous % 3) { //比较promiscuous_lan
 	case 0: //关闭
 		printf("Out of use\n");
 		break;
@@ -185,10 +185,11 @@ int main(int argc, char **argv) { //主函数
 		exit(1); //错误退出
 	}
 	while (1) { //无限循环
-		sleep(interval);
-		if (state == X_PRE||state==X_ON) { //判断状态是否应该中继
+		sleep(interval/2);
+		if (state != X_RE) { //判断状态是否应该中继
 			continue; //继续循环
 		}
+		sleep(interval/2);
 		puts("Modifying the Echo packet...");
 		set_echo(data_echo); //修改echo
 		puts("Sending the Echo packet to server...");

@@ -128,6 +128,7 @@ void work_lan(void) { //lan线程
 				send_wan(buf_lan, len_lan);	//发送echo
 				if (interval > 10&& repeat_lan == 1) {	//所有变量全部获得且正确
 					puts("Turning the work mode to Animation...");
+					sleep(interval/2);//XXX 发送success之前需要延时？
 					state = X_OFF;	//等待（自动）模式
 					puts("Storing the EAPOL Echo packet...");
 					size_echo = len_lan;
@@ -166,12 +167,13 @@ void work_lan(void) { //lan线程
 			case 0x02:	//logoff
 				puts("Got a EAPOL Logoff packet from client!");
 				puts("Turning the work mode to Repetition...");
+				sleep(interval/2);//XXX 中继前需要延迟？
 				state = X_RE;	//中继模式
 				puts("Storing the EAPOL Logoff packet...");
 				size_temp = len_lan;
 				memcpy(data_temp, buf_lan, size_temp);	//复制数据
 				break;
-			/*case 0xbf:	//echo
+			case 0xbf:	//echo
 				puts("Got a EAPOL Echo packet from client!");
 				puts("Reading the interval argument...");
 				get_interval(buf_lan);	//收集中继间隔
@@ -179,7 +181,7 @@ void work_lan(void) { //lan线程
 				get_echo(buf_lan);	//修正key和count
 				puts("Sending the EAPOL Echo packet to server...");
 				send_wan(buf_lan, len_lan);	//发送echo
-				break;*/
+				break;
 			}
 		} else if (state == X_RE) {
 			switch (buf_lan[0x0f]) { //比较type
