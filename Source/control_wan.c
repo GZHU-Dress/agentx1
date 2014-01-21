@@ -67,6 +67,17 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	system(command); //更换dhcp
 	print_wan();	//取出并打印地址
 }
+void repeat_wan(int sig) {	//wan中继
+	if(state>=X_OFF){
+		if(state==X_RE){
+			puts("Modifying the Echo packet...");
+			set_echo(data_echo); //修改echo
+			puts("Sending the Echo packet to server...");
+			send_wan(data_echo, size_echo); //发送echo
+		}
+		alarm(interval);//延时心跳
+	}
+}
 void open_wan(void) { //获得mac
 	if(ioctl(sock_wan, SIOCGIFFLAGS, &if_wan)<0){//准备混杂模式
 		error("WAN ioctl() error"); //出错提示

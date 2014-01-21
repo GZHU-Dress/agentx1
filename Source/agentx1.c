@@ -178,23 +178,12 @@ int main(int argc, char **argv) { //主函数
 	config(argc, argv); //初始化参数
 	puts("Turning the work mode to Initialization...");
 	state = X_PRE; //初始状态
-	interval = 10; //间隔
+	interval = 0; //间隔
 	puts("Opening the main work threads...");
 	unsigned long int tid_lan, tid_wan;	//线程
 	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL ) < 0
 			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL ) < 0) { //创建线程
 		error("pthread_create() error"); //出错提示
-	}
-	while (1) { //无限循环 TODO 使用计时器替代循环
-		sleep(interval/2);
-		if (state != X_RE) { //判断状态是否应该中继
-			continue; //继续循环
-		}
-		sleep(interval/2);
-		puts("Modifying the Echo packet...");
-		set_echo(data_echo); //修改echo
-		puts("Sending the Echo packet to server...");
-		send_wan(data_echo, size_echo); //发送echo
 	}
 	pthread_join(tid_wan,NULL);//等待wan线程
 	pthread_join(tid_lan,NULL);//等待lan线程

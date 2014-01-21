@@ -65,7 +65,7 @@ void set_echo(unsigned char *data) { //修改echo包
 void get_interval(unsigned char *data) { //得到时间间隔
 	long int time_temp;//临时时间节点
 	time(&time_temp);//当前时间
-	if (time_lan != 0 && interval > 10) {	//存在时间标志且已经获得间隔变量
+	if (time_lan != 0 && interval !=0) {	//存在上次到的时间标志且已经获得间隔变量
 		interval = (difftime(time_temp,time_lan) + interval) / 2;	//时间差的平均值
 	} else if (time_lan != 0) {	//第一次取到间隔变量
 		interval = difftime(time_temp,time_lan)+0;	//间隔时间
