@@ -1,0 +1,45 @@
+
+syntax: regexp
+^Debud\.avr32/agentx1$
+syntax: regexp
+^Debug\.arm_v4t/agentx1$
+syntax: regexp
+^Debug\.arm_v5te/agentx1$
+syntax: regexp
+^Debug\.armeb_v5te/agentx1$
+syntax: regexp
+^Debug\.i386/agentx1$
+syntax: regexp
+^Debug\.mips/agentx1$
+syntax: regexp
+^Debug\.mips_r2/agentx1$
+syntax: regexp
+^Debug\.mipsel/agentx1$
+syntax: regexp
+^Debug\.mipsel_r2/agentx1$
+syntax: regexp
+^Debug\.powerpc/agentx1$
+syntax: regexp
+^Debug\.x86_64/agentx1$
+syntax: regexp
+^Release\.avr32/agentx1$
+syntax: regexp
+^Release\.arm_v4t/agentx1$
+syntax: regexp
+^Release\.arm_v5te/agentx1$
+syntax: regexp
+^Release\.armeb_v5te/agentx1$
+syntax: regexp
+^Release\.i386/agentx1$
+syntax: regexp
+^Release\.mips/agentx1$
+syntax: regexp
+^Release\.mips_r2/agentx1$
+syntax: regexp
+^Release\.mipsel/agentx1$
+syntax: regexp
+^Release\.mipsel_r2/agentx1$
+syntax: regexp
+^Release\.powerpc/agentx1$
+syntax: regexp
+^Release\.x86_64/agentx1$

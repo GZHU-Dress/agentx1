@@ -9,7 +9,7 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 0]");
+	puts("Agent X One [Version: 1]");
 	puts("Homepage: http://ref.so/h0gz3");	//为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://ref.so/if4yh");//衍生请不要修改协议
 	puts("Copyright (C) 2013 Crazy Boy Feng. All rights reserved.");//狂男风
@@ -27,8 +27,26 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
 	puts("For more information, visit: http://ref.so/f19q");
 }
+void check(void){
+	int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
+	if (file < 0) {//创建失败
+		perror("open() error");//输出错误
+		exit(1);//错误退出
+	}
+	struct flock file_lock;//锁结构
+	file_lock.l_start = 0;//起始位置
+	file_lock.l_len = 0;//长度
+	file_lock.l_whence = SEEK_SET;//状态
+	file_lock.l_type = F_WRLCK;//标志位
+	file_lock.l_pid = getpid();//pid
+	if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
+		perror("fcntl() error");//写入失败
+		exit(1);//错误退出
+	}
+}
 void config(int argc, char **argv) { //配置
 	about();//输出软件产品相关信息
+	check();//检测进程文件锁
 	promiscuous=0;//混杂模式
 	dhcp_wan = 0; //不使用0，之后1，两次2，之前3
 	ip_wan = 0;
