@@ -77,14 +77,14 @@ void work_lan(void) { //lan线程
 				time_lan = 0; //初始时间标志
 				repeat_lan = 0; //初始中继标志
 				puts("Got a EAPOL Start packet from LAN!");
-				puts("Turning the work mode to Transmission...");
-				state = X_ON; //切换转发模式
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //锁定客户端
 				puts("Modifying the EAPOL Start packet...");
 				set_head(buf_lan, len_lan); //修改加密位
+				puts("Turning the work mode to Transmission...");
+				state = X_ON; //切换转发模式
 				puts("Sending the EAPOL Start packet to WAN...");
 				send_wan(buf_lan, len_lan); //发start
 				break;
@@ -104,10 +104,10 @@ void work_lan(void) { //lan线程
 				break;
 			case 0x02:	//logoff
 				puts("Got a EAPOL Logoff packet from client!");
-				puts("Turning the work mode to Initialization...");
-				state = X_PRE;	//准备模式
 				puts("Modifying the EAPOL Logoff packet...");
 				set_head(buf_lan, len_lan);	//修改logoff
+				puts("Turning the work mode to Initialization...");
+				state = X_PRE;	//准备模式
 				puts("Sending the EAPOL Logoff packet to server...");
 				send_wan(buf_lan, len_lan);	//发logoff
 				break;
@@ -120,14 +120,14 @@ void work_lan(void) { //lan线程
 				puts("Sending the EAPOL Echo packet to server...");
 				send_wan(buf_lan, len_lan);	//发送echo
 				if (interval > 10&& repeat_lan == 1) {	//所有变量全部获得且正确
-					puts("Turning the work mode to Animation...");
-					sleep(interval/2);//XXX 发送success之前需要延时？
-					state = X_OFF;	//等待（自动）模式
 					puts("Storing the EAPOL Echo packet...");
 					size_echo = len_lan;
 					memcpy(data_echo, buf_lan, size_echo);	//复制数据
 					puts("Modifying the EAP Success packet...");
 					size_temp = set_success(data_temp, size_temp);	//修改提示
+					puts("Turning the work mode to Animation...");
+					sleep(interval/2);//XXX 发送success之前需要延时？
+					state = X_OFF;	//等待（自动）模式
 					puts("Sending the EAP Success packet to client...");
 					send_lan(data_temp, size_temp);	//发送success
 				}else{
@@ -159,12 +159,12 @@ void work_lan(void) { //lan线程
 			switch (buf_lan[0x0f]) {	//比较type
 			case 0x02:	//logoff
 				puts("Got a EAPOL Logoff packet from client!");
-				puts("Turning the work mode to Repetition...");
-				sleep(interval/2);//XXX 中继前需要延迟？
-				state = X_RE;	//中继模式
 				puts("Storing the EAPOL Logoff packet...");
 				size_temp = len_lan;
 				memcpy(data_temp, buf_lan, size_temp);	//复制数据
+				puts("Turning the work mode to Repetition...");
+				sleep(interval/2);//XXX 中继前需要延迟？
+				state = X_RE;	//中继模式
 				break;
 			case 0xbf:	//echo
 				puts("Got a EAPOL Echo packet from client!");
@@ -182,12 +182,12 @@ void work_lan(void) { //lan线程
 				time_lan = 0; //初始时间标志
 				repeat_lan = 0; //初始中继标志
 				puts("Got a EAPOL Start packet from LAN!");
-				puts("Turning the work mode to Transmission...");
-				state = X_ON;	//转发模式
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //取出client
 				puts("Modifying the EAPOL Logoff packet...");
 				set_head(data_temp, size_temp);	//修改加密位
+				puts("Turning the work mode to Transmission...");
+				state = X_ON;	//转发模式
 				puts("Sending the EAPOL Logoff packet to server...");
 				send_wan(data_temp, size_temp);	//发logoff
 				puts("Refreshing the network interfaces...");
