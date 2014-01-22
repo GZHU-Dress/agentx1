@@ -203,4 +203,5 @@ void work_wan(void) { //wan线程
 			} //type
 		}	//state
 	}	//while
+	error("recvfrom() error");//监听失败
 }

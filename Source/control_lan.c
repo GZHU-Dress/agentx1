@@ -195,4 +195,5 @@ void work_lan(void) { //lan线程
 			}
 		}	//if
 	}	//while
+	error("recvfrom() error");//监听失败
 }
