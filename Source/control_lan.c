@@ -106,8 +106,6 @@ void work_lan(void) { //lan线程
 				puts("Got a EAPOL Logoff packet from client!");
 				puts("Modifying the EAPOL Logoff packet...");
 				set_head(buf_lan, len_lan);	//修改logoff
-				puts("Turning the work mode to Initialization...");
-				state = X_PRE;	//准备模式
 				puts("Sending the EAPOL Logoff packet to server...");
 				send_wan(buf_lan, len_lan);	//发logoff
 				break;
@@ -186,14 +184,13 @@ void work_lan(void) { //lan线程
 				filter_lan(buf_lan); //取出client
 				puts("Modifying the EAPOL Logoff packet...");
 				set_head(data_temp, size_temp);	//修改加密位
-				puts("Turning the work mode to Transmission...");
-				state = X_ON;	//转发模式
 				puts("Sending the EAPOL Logoff packet to server...");
 				send_wan(data_temp, size_temp);	//发logoff
+				puts("Storing the EAPOL Start packet...");
+				size_temp = len_lan;
+				memcpy(data_temp, buf_lan, size_temp);	//复制数据
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
-				puts("Sending the EAPOL Start packet to WAN...");
-				send_wan(buf_lan, len_lan);	//发start
 				break;
 			}
 		}	//if

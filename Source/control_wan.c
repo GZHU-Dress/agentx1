@@ -158,7 +158,7 @@ void work_wan(void) { //wan线程
 				send_lan(buf_wan, len_wan); //发送
 			}
 		} else if (state == X_OFF
-				&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //等待状态
+				&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //等待状态且已获得服务器
 			switch (buf_wan[0x12]) {	//type
 			case 0x03:	//success
 				puts("Got a EAP Success packet from server!");
@@ -183,12 +183,24 @@ void work_wan(void) { //wan线程
 				puts("Reading the repeat parameters...");
 				get_success(buf_wan); //读取echo_key和echo_count
 				break;
-			case 0x04: //failure
+			case 0x04: //failure 被动掉线
 				puts("Got a EAP Failure packet from server!");
 				puts("Turning the work mode to Initialization...");
 				state = X_PRE;	//初始模式
 				break;
 			}	//type
+		} else if (state == X_PRE && memcmp(server_wan, buf_wan + 6, 6) == 0) {//准备状态
+			switch (buf_wan[0x12]) {	//type
+			case 0x04: //failure //主动掉线（客户端发送start之后转发缓存的logoff得到的回应）
+				puts("Got a EAP Failure packet from server!");
+				puts("Modifying the EAPOL Start packet...");
+				set_head(data_temp, size_temp); //修改加密位
+				puts("Turning the work mode to Initialization...");
+				state = X_ON;	//转发模式
+				puts("Sending the EAPOL Start packet to WAN...");
+				send_wan(data_temp, size_temp);	//发start
+				break;
+			} //type
 		}	//state
 	}	//while
 }
