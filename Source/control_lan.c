@@ -76,7 +76,7 @@ void work_lan(void) { //lan线程
 			case 0x01: //start包
 				time_lan = 0; //初始时间标志
 				repeat_lan = 0; //初始中继标志
-				puts("Got a EAPOL Start packet from LAN!");
+				puts("Receiving a EAPOL Start packet from LAN!");
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				puts("Reading the client MAC address...");
@@ -94,7 +94,7 @@ void work_lan(void) { //lan线程
 			case 0x01://start
 				time_lan = 0; //初始时间标志
 				repeat_lan = 0; //初始中继标志
-				puts("Got a EAPOL Start packet from client!");
+				puts("Receiving a EAPOL Start packet from client!");
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //锁定客户端
 				puts("Modifying the EAPOL Start packet...");
@@ -103,14 +103,14 @@ void work_lan(void) { //lan线程
 				send_wan(buf_lan, len_lan); //发start
 				break;
 			case 0x02:	//logoff
-				puts("Got a EAPOL Logoff packet from client!");
+				puts("Receiving a EAPOL Logoff packet from client!");
 				puts("Modifying the EAPOL Logoff packet...");
 				set_head(buf_lan, len_lan);	//修改logoff
 				puts("Sending the EAPOL Logoff packet to server...");
 				send_wan(buf_lan, len_lan);	//发logoff
 				break;
 			case 0xbf:	//hello
-				puts("Got a EAPOL Hello packet from client!");
+				puts("Receiving a EAPOL Hello packet from client!");
 				puts("Reading the interval argument...");
 				get_interval(buf_lan);	//收集中继间隔
 				puts("Reading the repeat parameters...");
@@ -135,7 +135,7 @@ void work_lan(void) { //lan线程
 			case 0x00:	//eap
 				if (buf_lan[0x12] == 0x02 && buf_lan[0x16] == 0x04) {//response-md5
 					puts(
-							"Got a EAP Response MD5-Challenge packet from client!");
+							"Receiving a EAP Response MD5-Challenge packet from client!");
 					puts("Modifying the EAP Response MD5-Challenge packet...");
 					set_head(buf_lan, len_lan);	//修改md5
 					puts(
@@ -143,7 +143,7 @@ void work_lan(void) { //lan线程
 					send_wan(buf_lan, len_lan);	//发送md5
 					break;
 				} else if (buf_lan[0x12] == 0x02 && buf_lan[0x16] == 0x01) {//response-id
-					puts("Got a EAP Response Identity packet from client!");
+					puts("Receiving a EAP Response Identity packet from client!");
 					puts("Modifying the EAP Response Identity packet...");
 					set_head(buf_lan, len_lan);	//修改id
 					puts(
@@ -156,7 +156,7 @@ void work_lan(void) { //lan线程
 				&& memcmp(client_lan, buf_lan + 6, 6) == 0) {
 			switch (buf_lan[0x0f]) {	//比较type
 			case 0x02:	//logoff
-				puts("Got a EAPOL Logoff packet from client!");
+				puts("Receiving a EAPOL Logoff packet from client!");
 				puts("Turning the work mode to Repetition...");
 				state = X_RE;	//中继模式
 				puts("Storing the EAPOL Logoff packet...");
@@ -164,7 +164,7 @@ void work_lan(void) { //lan线程
 				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
 				break;
 			/*case 0xbf:	//hello
-				puts("Got a EAPOL Hello packet from client!");
+				puts("Receiving a EAPOL Hello packet from client!");
 				puts("Reading the interval argument...");
 				get_interval(buf_lan);	//收集中继间隔
 				puts("Reading the repeat parameters...");
@@ -179,7 +179,7 @@ void work_lan(void) { //lan线程
 			case 0x01: //start包
 				time_lan = 0; //初始时间标志
 				repeat_lan = 0; //初始中继标志
-				puts("Got a EAPOL Start packet from LAN!");
+				puts("Receiving a EAPOL Start packet from LAN!");
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //取出client
 				puts("Modifying the EAPOL Logoff packet...");

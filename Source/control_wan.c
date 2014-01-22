@@ -124,7 +124,7 @@ void work_wan(void) { //wan线程
 		} else if (state == X_ON) { //转发状态
 			if (buf_wan[0x12] == 0x01) { //request
 				if (buf_wan[0x16] == 0x01) { //id
-					puts("Got a EAP Request Identity packet from WAN!");
+					puts("Receiving a EAP Request Identity packet from WAN!");
 					puts("Reading the server MAC address...");
 					filter_wan(buf_wan); //锁定服务器
 					puts(
@@ -132,14 +132,14 @@ void work_wan(void) { //wan线程
 					send_lan(buf_wan, len_wan); //发送
 				} else if (buf_wan[0x16] == 0x04
 						&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //md5
-					puts("Got a EAP Request Identity packet from server!");
+					puts("Receiving a EAP Request Identity packet from server!");
 					puts(
 							"Sending the EAP Request Identity packet to client...");
 					send_lan(buf_wan, len_wan); //发送
 				}
 			} else if (buf_wan[0x12] == 0x03
 					&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //success
-				puts("Got a EAP Success packet from server!");
+				puts("Receiving a EAP Success packet from server!");
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				puts("Storing the EAP Success packet...");
@@ -151,7 +151,7 @@ void work_wan(void) { //wan线程
 				send_lan(buf_wan, len_wan); //发送
 			} else if (buf_wan[0x12] == 0x04
 					&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //failure
-				puts("Got a EAP Failure packet from server!");
+				puts("Receiving a EAP Failure packet from server!");
 				puts("Turning the work mode to Initialization...");
 				state = X_PRE; //初始模式
 				puts("Sending the EAP Failure packet to client...");
@@ -161,14 +161,14 @@ void work_wan(void) { //wan线程
 				&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //等待状态且已获得服务器
 			switch (buf_wan[0x12]) {	//type
 			case 0x03:	//success
-				puts("Got a EAP Success packet from server!");
+				puts("Receiving a EAP Success packet from server!");
 				puts("Reading the repeat parameters...");
 				get_success(buf_wan); //读取hello_key和hello_count
 				puts("Sending the EAP Success packet to client...");
 				send_lan(buf_wan, len_wan); //发送
 				break;
 			case 0x04: //failure
-				puts("Got a EAP Failure packet from server!");
+				puts("Receiving a EAP Failure packet from server!");
 				puts("Turning the work mode to Initialization...");
 				state = X_PRE;	//初始模式
 				puts("Sending the EAP Failure packet to client...");
@@ -179,12 +179,12 @@ void work_wan(void) { //wan线程
 				&& memcmp(server_wan, buf_wan + 6, 6) == 0) {	//中继状态
 			switch (buf_wan[0x12]) {	//type
 			case 0x03:	//success
-				puts("Got a EAP Success packet from server!");
+				puts("Receiving a EAP Success packet from server!");
 				puts("Reading the repeat parameters...");
 				get_success(buf_wan); //读取hello_key和hello_count
 				break;
 			case 0x04: //failure 被动掉线
-				puts("Got a EAP Failure packet from server!");
+				puts("Receiving a EAP Failure packet from server!");
 				puts("Turning the work mode to Initialization...");
 				state = X_PRE;	//初始模式
 				break;
@@ -192,7 +192,7 @@ void work_wan(void) { //wan线程
 		} else if (state == X_PRE && memcmp(server_wan, buf_wan + 6, 6) == 0) {//准备状态
 			switch (buf_wan[0x12]) {	//type
 			case 0x04: //failure //主动掉线（客户端发送start之后转发缓存的logoff得到的回应）
-				puts("Got a EAP Failure packet from server!");
+				puts("Receiving a EAP Failure packet from server!");
 				puts("Modifying the EAPOL Start packet...");
 				set_head(data_buffer, size_buffer); //修改加密位
 				puts("Turning the work mode to Initialization...");
