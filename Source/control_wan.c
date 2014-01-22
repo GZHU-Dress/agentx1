@@ -143,8 +143,8 @@ void work_wan(void) { //wan线程
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				puts("Storing the EAP Success packet...");
-				size_temp = len_wan;
-				memcpy(data_temp, buf_wan, size_temp);	//复制数据
+				size_buffer = len_wan;
+				memcpy(data_buffer, buf_wan, size_buffer);	//复制数据
 				puts("Reading the repeat parameters...");
 				get_success(buf_wan); //读取hello_key和hello_count
 				puts("Sending the EAP Success packet to client...");
@@ -194,11 +194,11 @@ void work_wan(void) { //wan线程
 			case 0x04: //failure //主动掉线（客户端发送start之后转发缓存的logoff得到的回应）
 				puts("Got a EAP Failure packet from server!");
 				puts("Modifying the EAPOL Start packet...");
-				set_head(data_temp, size_temp); //修改加密位
+				set_head(data_buffer, size_buffer); //修改加密位
 				puts("Turning the work mode to Initialization...");
 				state = X_ON;	//转发模式
 				puts("Sending the EAPOL Start packet to WAN...");
-				send_wan(data_temp, size_temp);	//发start
+				send_wan(data_buffer, size_buffer);	//发start
 				break;
 			} //type
 		}	//state

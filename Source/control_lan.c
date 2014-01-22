@@ -122,11 +122,11 @@ void work_lan(void) { //lan线程
 					size_hello = len_lan;
 					memcpy(data_hello, buf_lan, size_hello);	//复制数据
 					puts("Modifying the EAP Success packet...");
-					size_temp = set_success(data_temp, size_temp);	//修改提示
+					size_buffer = set_success(data_buffer, size_buffer);	//修改提示
 					puts("Turning the work mode to Animation...");
 					state = X_OFF;	//等待（自动）模式
 					puts("Sending the EAP Success packet to client...");
-					send_lan(data_temp, size_temp);	//发送success（注意客户端会立即回应hello）
+					send_lan(data_buffer, size_buffer);	//发送success（注意客户端会立即回应hello）
 					alarm(interval);//启动中继定时器
 				}else{
 					puts("Resetting the invalid Hello work...");
@@ -160,8 +160,8 @@ void work_lan(void) { //lan线程
 				puts("Turning the work mode to Repetition...");
 				state = X_RE;	//中继模式
 				puts("Storing the EAPOL Logoff packet...");
-				size_temp = len_lan;
-				memcpy(data_temp, buf_lan, size_temp);	//复制数据
+				size_buffer = len_lan;
+				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
 				break;
 			/*case 0xbf:	//hello
 				puts("Got a EAPOL Hello packet from client!");
@@ -183,12 +183,12 @@ void work_lan(void) { //lan线程
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //取出client
 				puts("Modifying the EAPOL Logoff packet...");
-				set_head(data_temp, size_temp);	//修改加密位
+				set_head(data_buffer, size_buffer);	//修改加密位
 				puts("Sending the EAPOL Logoff packet to server...");
-				send_wan(data_temp, size_temp);	//发logoff
+				send_wan(data_buffer, size_buffer);	//发logoff
 				puts("Storing the EAPOL Start packet...");
-				size_temp = len_lan;
-				memcpy(data_temp, buf_lan, size_temp);	//复制数据
+				size_buffer = len_lan;
+				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				break;
