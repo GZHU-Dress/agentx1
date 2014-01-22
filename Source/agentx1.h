@@ -25,8 +25,8 @@
 #include <linux/if_packet.h>
 //MAIN
 static const unsigned char X_PRE = 0; //初始状态，捕捉start包//initialization
-static const unsigned char X_ON = 1; //转发状态，捕捉到echo前//transmission
-static const unsigned char X_OFF = 2; //等待状态，捕捉到echo后等待logoff//animation
+static const unsigned char X_ON = 1; //转发状态，捕捉到hello前//transmission
+static const unsigned char X_OFF = 2; //等待状态，捕捉到hello后等待logoff//animation
 static const unsigned char X_RE = 3; //中继状态，捕捉start包和failure//repetition
 unsigned char state; //状态
 unsigned int interval; //间隔
@@ -45,8 +45,8 @@ unsigned int dns_wan; //DNS
 unsigned char mac_wan[6]; //mac地址
 unsigned char server_wan[6]; //初始服务器地址
 //PACKET
-int size_echo;
-unsigned char data_echo[1024]; //重复包
+int size_hello;
+unsigned char data_hello[1024]; //重复包
 int size_temp;
 unsigned char data_temp[1024]; //临时包
 //MAIN
@@ -63,10 +63,10 @@ void find_wan(char *interface); //打开wan连接
 void send_wan(unsigned char *buffer, int length); //wan发包
 void work_wan(void); //wan线程
 //PACKET
-void get_echo(unsigned char *data); //从echo得到中继变量
+void get_hello(unsigned char *data); //从hello得到中继变量
 void get_interval(unsigned char *data); //得到时间间隔
 void get_success(unsigned char *data); //从success得到中继变量
-void set_echo(unsigned char *data); //修改echo包
+void set_hello(unsigned char *data); //修改hello包
 void set_head(unsigned char *data, int size); //修改加密位
 int set_success(unsigned char *data, int size); //修改携带信息
 

@@ -37,30 +37,30 @@ static unsigned char *get_code(unsigned char *buffer, int length) { //将字节�
 	}
 	return result;
 }
-unsigned int echo_key=0;	//心跳key
-unsigned int echo_count=0;	//心跳计数
+unsigned int hello_key=0;	//心跳key
+unsigned int hello_count=0;	//心跳计数
 void get_success(unsigned char *data) {//初始化中继变量
 	unsigned short int length;	//原消息长度
 	memcpy(&length, data + 0x1a, 2);	//得到原长度
 	length = ntohs(length);	//转换字节序
-	memcpy(&echo_key, get_code(data + 0x1c + length + 0x69 + 0x18, 4), 4); //译码参数
-	echo_key = ntohl(echo_key); //字节序
-	printf("\tEcho work key: %d\n",echo_key);
+	memcpy(&hello_key, get_code(data + 0x1c + length + 0x69 + 0x18, 4), 4); //译码参数
+	hello_key = ntohl(hello_key); //字节序
+	printf("\tHello work key: %d\n",hello_key);
 	if(repeat_lan==0){//尚未初始化
-		echo_count =0x0000102a;	//初始化
-		printf("\tEcho work count: %d\n",echo_count);
+		hello_count =0x0000102a;	//初始化
+		printf("\tHello work count: %d\n",hello_count);
 	}
 }
-void set_echo(unsigned char *data) { //修改echo包
-	echo_count++; //计数器
-	unsigned int echo_temp; //参数
-	unsigned char *echo_code; //数组
-	echo_temp = htonl(echo_key + echo_count); //计算并更改字序
-	echo_code = (unsigned char *) &echo_temp; //key+count
-	memcpy(data + 0x18, get_code(echo_code, 4), 4); //译码
-	echo_temp = htonl(echo_count); //更改字序
-	echo_code = (unsigned char *) &echo_temp; //count
-	memcpy(data + 0x22, get_code(echo_code, 4), 4); //译码
+void set_hello(unsigned char *data) { //修改hello包
+	hello_count++; //计数器
+	unsigned int hello_temp; //参数
+	unsigned char *hello_code; //数组
+	hello_temp = htonl(hello_key + hello_count); //计算并更改字序
+	hello_code = (unsigned char *) &hello_temp; //key+count
+	memcpy(data + 0x18, get_code(hello_code, 4), 4); //译码
+	hello_temp = htonl(hello_count); //更改字序
+	hello_code = (unsigned char *) &hello_temp; //count
+	memcpy(data + 0x22, get_code(hello_code, 4), 4); //译码
 }
 void get_interval(unsigned char *data) { //得到时间间隔
 	long int time_temp;//临时时间节点
@@ -71,22 +71,22 @@ void get_interval(unsigned char *data) { //得到时间间隔
 		interval = difftime(time_temp,time_lan)+0;	//间隔时间
 	}
 	time(&time_lan);//当前时间
-	printf("\tEcho repeat interval: %d\n",interval);
+	printf("\tHello repeat interval: %d\n",interval);
 }
-void get_echo(unsigned char *data) { //从echo得到中继变量
-	unsigned int echo_kc; //key+count
-	memcpy(&echo_kc, get_code(data + 0x18, 4), 4); //译码参数
-	unsigned int echo_c; //count
-	memcpy(&echo_c, get_code(data + 0x22, 4), 4); //译码参数
-	unsigned int echo_count_temp = ntohl(echo_c); //新的count
-	unsigned int echo_key_temp = ntohl(echo_kc) - echo_count_temp; //新的key
+void get_hello(unsigned char *data) { //从hello得到中继变量
+	unsigned int hello_kc; //key+count
+	memcpy(&hello_kc, get_code(data + 0x18, 4), 4); //译码参数
+	unsigned int hello_c; //count
+	memcpy(&hello_c, get_code(data + 0x22, 4), 4); //译码参数
+	unsigned int hello_count_temp = ntohl(hello_c); //新的count
+	unsigned int hello_key_temp = ntohl(hello_kc) - hello_count_temp; //新的key
 	repeat_lan =
-			(echo_count_temp == echo_count + 1 && echo_key_temp == echo_key) ?
+			(hello_count_temp == hello_count + 1 && hello_key_temp == hello_key) ?
 					1 : 0;	//所得变量正确1错误0
-	echo_count = echo_count_temp;	//转移变量
-	echo_key = echo_key_temp;	//转移变量
-	printf("\tEcho work key: %d\n",echo_key);
-	printf("\tEcho work count: %d\n",echo_count);
+	hello_count = hello_count_temp;	//转移变量
+	hello_key = hello_key_temp;	//转移变量
+	printf("\tHello work key: %d\n",hello_key);
+	printf("\tHello work count: %d\n",hello_count);
 }
 void set_head(unsigned char *data, int size) {	//修改加密位
 	unsigned short int length;	//填充长度

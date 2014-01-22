@@ -69,10 +69,10 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 }
 void repeat_wan(int sig) {	//wan中继
 	if(state>=X_OFF){
-		puts("Modifying the Echo packet...");
-		set_echo(data_echo); //修改echo
-		puts("Sending the Echo packet to server...");
-		send_wan(data_echo, size_echo); //发送echo
+		puts("Modifying the Hello packet...");
+		set_hello(data_hello); //修改hello
+		puts("Sending the Hello packet to server...");
+		send_wan(data_hello, size_hello); //发送hello
 		alarm(interval);//延时心跳
 	}
 }
@@ -146,7 +146,7 @@ void work_wan(void) { //wan线程
 				size_temp = len_wan;
 				memcpy(data_temp, buf_wan, size_temp);	//复制数据
 				puts("Reading the repeat parameters...");
-				get_success(buf_wan); //读取echo_key和echo_count
+				get_success(buf_wan); //读取hello_key和hello_count
 				puts("Sending the EAP Success packet to client...");
 				send_lan(buf_wan, len_wan); //发送
 			} else if (buf_wan[0x12] == 0x04
@@ -163,7 +163,7 @@ void work_wan(void) { //wan线程
 			case 0x03:	//success
 				puts("Got a EAP Success packet from server!");
 				puts("Reading the repeat parameters...");
-				get_success(buf_wan); //读取echo_key和echo_count
+				get_success(buf_wan); //读取hello_key和hello_count
 				puts("Sending the EAP Success packet to client...");
 				send_lan(buf_wan, len_wan); //发送
 				break;
@@ -181,7 +181,7 @@ void work_wan(void) { //wan线程
 			case 0x03:	//success
 				puts("Got a EAP Success packet from server!");
 				puts("Reading the repeat parameters...");
-				get_success(buf_wan); //读取echo_key和echo_count
+				get_success(buf_wan); //读取hello_key和hello_count
 				break;
 			case 0x04: //failure 被动掉线
 				puts("Got a EAP Failure packet from server!");
