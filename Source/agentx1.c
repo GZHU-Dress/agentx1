@@ -10,10 +10,10 @@
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
 	puts("Agent X One [Version: 2]");
-	puts("Homepage: https://bitbucket.org/CrazyBoyFeng/agentx1");	//为了保证可持续的反馈与维护，请不要修改网址
-	puts("GNU General Public License: http://www.gnu.org/licenses/gpl.html");//衍生请不要修改协议
-	puts("Copyright (C) 2013-2014 Crazy Boy Feng. All rights reserved.");//狂男风
-	puts("This is dedicated to my friends, for the passing good times...");//非常希望这句话在各种衍生中也能够得以保留
+	puts("Homepage: http://bitbucket.org/CrazyBoyFeng/agentx1"); //为了保证可持续的反馈与维护，请不要修改网址
+	puts("GNU General Public License: http://gnu.org/licenses/gpl.html"); //衍生请不要修改协议
+	puts("Copyright (C) 2013-2014 Crazy Boy Feng. All rights reserved."); //狂男风
+	puts("This is dedicated to my friends, for the passing good times...");	//非常希望这句话在各种衍生中也能够得以保留
 }
 void help(void) { //显示帮助相关信息
 	puts("Usage: agentx1 [-h] Help to use");
@@ -21,31 +21,33 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-W <interface-name>] WAN (default br-wan)");
 	puts("\t[-p NONUSE(default)|LOCAL|BOTH] Promiscuous mode");
 	puts("\t[-a NONE(default)|FORMER|LATER|MIDDLE] DHCP function");
-	puts("\t[-i <address>] Binding static (default local) IP");
-	puts("\t[-n <address>] Binding static (default local) netmask");
+	puts("\t[-u <account>] Binding account (default by client)");
+	puts("\t[-i <address>] Binding static (default by local) IP");
+	puts("\t[-n <address>] Binding static (default by local) netmask");
 	puts("\t[-g <address>] Binding (default 0.0.0.0) gateway");
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
-	puts("For more information, visit: http://ref.so/f19q");//todo 改链接
+	puts("For more information, visit: http://ref.so/f19q"); //todo 改链接
 }
 /*void check(void){
-	int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
-	if (file < 0) {//创建失败
-		error("open() error");//输出错误
-	}
-	struct flock file_lock;//锁结构
-	file_lock.l_start = 0;//起始位置
-	file_lock.l_len = 0;//长度
-	file_lock.l_whence = SEEK_SET;//状态
-	file_lock.l_type = F_WRLCK;//标志位
-	file_lock.l_pid = getpid();//pid
-	if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
-		error("fcntl() error");//写入失败
-	}
-}*/
+ int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
+ if (file < 0) {//创建失败
+ error("open() error");//输出错误
+ }
+ struct flock file_lock;//锁结构
+ file_lock.l_start = 0;//起始位置
+ file_lock.l_len = 0;//长度
+ file_lock.l_whence = SEEK_SET;//状态
+ file_lock.l_type = F_WRLCK;//标志位
+ file_lock.l_pid = getpid();//pid
+ if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
+ error("fcntl() error");//写入失败
+ }
+ }*/
 void config(int argc, char **argv) { //配置
-	about();//输出软件产品相关信息
+	about(); //输出软件产品相关信息
 	//check();//检测进程文件锁
-	promiscuous=0;//混杂模式
+	promiscuous = 0;	//混杂模式
+	account_wan = '\0';	//用户绑定账户
 	dhcp_wan = 0; //不使用0，之后1，两次2，之前3
 	ip_wan = 0;
 	netmask_wan = 0;
@@ -55,7 +57,7 @@ void config(int argc, char **argv) { //配置
 	char *lan = "br-lan";
 	char *wan = "br-wan";
 	int option; //操作符
-	while ((option = getopt(argc, argv, "hL:W:p:a:i:n:g:d:")) != -1) { //大写参数是对工作有关键性影响的
+	while ((option = getopt(argc, argv, "hL:W:p:u:a:i:n:g:d:")) != -1) { //大写参数是对工作有关键性影响的
 		switch (option) { //操作符
 		case 'L': //lan
 			lan = optarg;
@@ -65,15 +67,19 @@ void config(int argc, char **argv) { //配置
 			break;
 		case 'p': //wan
 			if (strcmp("NONUSE", optarg) == 0) {
-				promiscuous = 0;//不混杂
+				promiscuous = 0; //不混杂
 			} else if (strcmp("LOCAL", optarg) == 0) {
-				promiscuous = 1;//本地混杂
+				promiscuous = 1; //本地混杂
 			} else if (strcmp("BOTH", optarg) == 0) {
-				promiscuous = 2;//双向混杂
+				promiscuous = 2; //双向混杂
 			} else {
-				printf("The promiscious mode %s is invalid, so abort!\n", optarg);
-				opterr=2;
+				printf("The promiscious mode %s is invalid, so abort!\n",
+						optarg);
+				opterr = 2;
 			}
+			break;
+		case 'u': //用户账户
+			account_wan = optarg;
 			break;
 		case 'a': //dhcp
 			if (strcmp("NONE", optarg) == 0) {
@@ -84,9 +90,9 @@ void config(int argc, char **argv) { //配置
 				dhcp_wan = 2;
 			} else if (strcmp("FORMER", optarg) == 0) {
 				dhcp_wan = 3;
-			}else{
+			} else {
 				printf("The DHCP mode %s is invalid, so abort!\n", optarg);
-				opterr=2;
+				opterr = 2;
 			}
 			break;
 		case 'i': //ip
@@ -134,7 +140,7 @@ void config(int argc, char **argv) { //配置
 	case 1: //操作符错误
 		help(); //显示帮助
 		/* no break */
-	case 2://参数错误
+	case 2: //参数错误
 		opterr--;
 		exit(1);
 		break;
@@ -170,9 +176,9 @@ void config(int argc, char **argv) { //配置
 		break;
 	}
 }
-void error(char *msg){
-	perror(msg);//输出错误
-	exit(1);//错误退出
+void error(char *msg) {
+	perror(msg); //输出错误
+	exit(1); //错误退出
 }
 int main(int argc, char **argv) { //主函数
 	config(argc, argv); //初始化参数
@@ -185,8 +191,8 @@ int main(int argc, char **argv) { //主函数
 			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL ) < 0) { //创建线程
 		error("pthread_create() error"); //出错提示
 	}
-	signal(SIGALRM, repeat_wan);//设置定时器
-	pthread_join(tid_wan,NULL);//等待wan线程
-	pthread_join(tid_lan,NULL);//等待lan线程
+	signal(SIGALRM, repeat_wan); //设置中继定时器
+	pthread_join(tid_wan, NULL ); //等待wan线程
+	pthread_join(tid_lan, NULL ); //等待lan线程
 	return 0;
 }

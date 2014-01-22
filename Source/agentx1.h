@@ -37,6 +37,7 @@ unsigned char repeat_lan; //准备中继标志
 unsigned char mac_lan[6]; //mac
 unsigned char client_lan[6]; //mac地址
 //WAN
+char *account_wan; //用户绑定账户
 unsigned char dhcp_wan; //DHCP设置
 unsigned int ip_wan; //绑定IP或自动获得的IP
 unsigned int netmask_wan; //掩码
@@ -50,7 +51,7 @@ unsigned char data_hello[1024]; //重复包
 int size_buffer;
 unsigned char data_buffer[1024]; //临时包
 //MAIN
-void error(char *message);//出错退出
+void error(char *message); //出错退出
 //LAN
 void find_lan(char *interface); //打开lan连接
 void send_lan(unsigned char *buffer, int length); //lan发包
@@ -68,6 +69,7 @@ void get_interval(unsigned char *data); //得到时间间隔
 void get_success(unsigned char *data); //从success得到中继变量
 void set_hello(unsigned char *data); //修改hello包
 void set_head(unsigned char *data, int size); //修改加密位
+int set_identity(unsigned char *data, int size); //修改账户
 int set_success(unsigned char *data, int size); //修改携带信息
 
 #endif /* AGENTX1_H_ */

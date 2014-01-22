@@ -61,31 +61,31 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	}
 	ip_wan = 0; //重新初始化
 	netmask_wan = 0; //重新初始化
-	char command[100]="udhcpc -i ";//dhcp命令
-	strcat(command,if_wan.ifr_name);//wan
-	strcat(command,">/dev/null");//屏蔽输出
+	char command[100] = "udhcpc -i "; //dhcp命令
+	strcat(command, if_wan.ifr_name); //wan
+	strcat(command, ">/dev/null"); //屏蔽输出
 	system(command); //更换dhcp
 	print_wan();	//取出并打印地址
 }
 void repeat_wan(int sig) {	//wan中继
-	if(state>=X_OFF){
+	if (state >= X_OFF) {
 		puts("Modifying the EAPOL-Hello packet...");
 		set_hello(data_hello); //修改hello
 		puts("Sending the EAPOL-Hello packet to server...");
 		send_wan(data_hello, size_hello); //发送hello
-		alarm(interval);//延时心跳
+		alarm(interval); //延时心跳
 	}
 }
 void open_wan(void) { //获得mac
-	if(ioctl(sock_wan, SIOCGIFFLAGS, &if_wan)<0){//准备混杂模式
+	if (ioctl(sock_wan, SIOCGIFFLAGS, &if_wan) < 0) { //准备混杂模式
 		error("WAN ioctl() error"); //出错提示
 	}
-	if(promiscuous==2){//双向混杂模式
-		if_wan.ifr_flags |= IFF_PROMISC;//混杂模式
-	}else{
-		if_wan.ifr_flags &=~ IFF_PROMISC;//混杂模式
+	if (promiscuous == 2) { //双向混杂模式
+		if_wan.ifr_flags |= IFF_PROMISC; //混杂模式
+	} else {
+		if_wan.ifr_flags &= ~IFF_PROMISC; //混杂模式
 	}
-	if(ioctl(sock_wan, SIOCGIFFLAGS, &if_wan)<0){//以混杂模式打开网卡
+	if (ioctl(sock_wan, SIOCGIFFLAGS, &if_wan) < 0) { //以混杂模式打开网卡
 		error("WAN ioctl() error"); //出错提示
 	}
 	if (ioctl(sock_wan, SIOCGIFHWADDR, &if_wan) < 0) { //查询mac
@@ -103,7 +103,7 @@ void filter_wan(unsigned char *buffer) { //锁定服务器
 			server_wan[4], server_wan[5]);
 }
 void send_wan(unsigned char *buffer, int length) {	//wan发包
-	if(promiscuous==0){//非混杂模式修改dst地址
+	if (promiscuous == 0) {	//非混杂模式修改dst地址
 		memcpy(buffer, server_wan, 6); //修改dst为server
 	}
 	memcpy(buffer + 6, mac_wan, 6);	//修改src为wan
@@ -117,17 +117,17 @@ void work_wan(void) { //wan线程
 	puts("Receiving the packets from WAN...");
 	int len_wan; //包长度
 	unsigned char buf_wan[1024]; //缓冲区
-	while ((len_wan = recvfrom(sock_wan, buf_wan, 1024, 0, NULL,
-			NULL )) > 0) { //循环接收
-		if (buf_wan[0x0f] != 0x00||memcmp(mac_wan, buf_wan, 6) != 0) { //不是eap包或者不是发给自己的包
-			continue;//丢弃
+	while ((len_wan = recvfrom(sock_wan, buf_wan, 1024, 0, NULL, NULL )) > 0) { //循环接收
+		if (buf_wan[0x0f] != 0x00 || memcmp(mac_wan, buf_wan, 6) != 0) { //不是eap包或者不是发给自己的包
+			continue; //丢弃
 		} else if (state == X_ON) { //转发状态
 			if (buf_wan[0x12] == 0x01) { //request
 				if (buf_wan[0x16] == 0x01) { //id
 					puts("Receiving a EAP-Request/Identity packet from WAN!");
 					puts("Reading the server MAC address...");
 					filter_wan(buf_wan); //锁定服务器
-					puts("Sending the EAP-Request/Identity packet to client...");
+					puts(
+							"Sending the EAP-Request/Identity packet to client...");
 					send_lan(buf_wan, len_wan); //发送
 				} else if (buf_wan[0x16] == 0x04
 						&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //md5
@@ -155,8 +155,7 @@ void work_wan(void) { //wan线程
 				puts("Sending the EAP-Failure packet to client...");
 				send_lan(buf_wan, len_wan); //发送
 			}
-		} else if (state == X_OFF
-				&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //等待状态且已获得服务器
+		} else if (state == X_OFF && memcmp(server_wan, buf_wan + 6, 6) == 0) { //等待状态且已获得服务器
 			switch (buf_wan[0x12]) {	//type
 			case 0x03:	//success
 				puts("Receiving a EAP-Success packet from server!");
@@ -173,8 +172,7 @@ void work_wan(void) { //wan线程
 				send_lan(buf_wan, len_wan);	//发送
 				break;
 			}	//type
-		} else if (state == X_RE
-				&& memcmp(server_wan, buf_wan + 6, 6) == 0) {	//中继状态
+		} else if (state == X_RE && memcmp(server_wan, buf_wan + 6, 6) == 0) {//中继状态
 			switch (buf_wan[0x12]) {	//type
 			case 0x03:	//success
 				puts("Receiving a EAP-Success packet from server!");
@@ -187,7 +185,7 @@ void work_wan(void) { //wan线程
 				state = X_PRE;	//初始模式
 				break;
 			}	//type
-		} else if (state == X_PRE && memcmp(server_wan, buf_wan + 6, 6) == 0) {//准备状态
+		} else if (state == X_PRE && memcmp(server_wan, buf_wan + 6, 6) == 0) {	//准备状态
 			switch (buf_wan[0x12]) {	//type
 			case 0x04: //failure //主动掉线（客户端发送start之后转发缓存的logoff得到的回应）
 				puts("Receiving a EAP-Failure packet from server!");
@@ -201,5 +199,5 @@ void work_wan(void) { //wan线程
 			} //type
 		}	//state
 	}	//while
-	error("recvfrom() error");//监听失败
+	error("recvfrom() error");	//监听失败
 }
