@@ -27,7 +27,7 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
 	puts("For more information, visit: http://ref.so/f19q");//todo 改链接
 }
-void check(void){
+/*void check(void){
 	int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
 	if (file < 0) {//创建失败
 		error("open() error");//输出错误
@@ -41,10 +41,10 @@ void check(void){
 	if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
 		error("fcntl() error");//写入失败
 	}
-}
+}*/
 void config(int argc, char **argv) { //配置
 	about();//输出软件产品相关信息
-	check();//检测进程文件锁
+	//check();//检测进程文件锁
 	promiscuous=0;//混杂模式
 	dhcp_wan = 0; //不使用0，之后1，两次2，之前3
 	ip_wan = 0;
