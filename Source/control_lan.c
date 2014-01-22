@@ -113,7 +113,6 @@ void work_lan(void) { //lan线程
 				break;
 			case 0xbf:	//echo
 				puts("Got a EAPOL Echo packet from client!");
-				signal(SIGALRM, repeat_wan);//设置定时器
 				puts("Reading the interval argument...");
 				get_interval(buf_lan);	//收集中继间隔
 				puts("Reading the repeat parameters...");
@@ -128,9 +127,9 @@ void work_lan(void) { //lan线程
 					size_temp = set_success(data_temp, size_temp);	//修改提示
 					puts("Turning the work mode to Animation...");
 					state = X_OFF;	//等待（自动）模式
-					alarm(interval);//启动定时器
 					puts("Sending the EAP Success packet to client...");
-					send_lan(data_temp, size_temp);	//发送success
+					send_lan(data_temp, size_temp);	//发送success（注意客户端会立即回应hello）
+					alarm(interval);//启动中继定时器
 				}else{
 					puts("Resetting the invalid echo work...");
 				}
@@ -166,16 +165,16 @@ void work_lan(void) { //lan线程
 				size_temp = len_lan;
 				memcpy(data_temp, buf_lan, size_temp);	//复制数据
 				break;
-			case 0xbf:	//echo
+			/*case 0xbf:	//echo
 				puts("Got a EAPOL Echo packet from client!");
-				alarm(interval);//启动定时器
 				puts("Reading the interval argument...");
 				get_interval(buf_lan);	//收集中继间隔
 				puts("Reading the repeat parameters...");
 				get_echo(buf_lan);	//修正key和count
 				puts("Sending the EAPOL Echo packet to server...");
 				send_wan(buf_lan, len_lan);	//发送echo
-				break;
+				alarm(interval);//启动定时器
+				break;*///为了防止客户端应答提示success包从而导致echo过于频繁，off状态不再转发echo，直接中继
 			}
 		} else if (state == X_RE) {
 			switch (buf_lan[0x0f]) { //比较type

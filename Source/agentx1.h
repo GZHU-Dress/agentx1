@@ -26,7 +26,7 @@
 //MAIN
 static const unsigned char X_PRE = 0; //初始状态，捕捉start包//initialization
 static const unsigned char X_ON = 1; //转发状态，捕捉到echo前//transmission
-static const unsigned char X_OFF = 2; //等待状态，捕捉到echo后//animation
+static const unsigned char X_OFF = 2; //等待状态，捕捉到echo后等待logoff//animation
 static const unsigned char X_RE = 3; //中继状态，捕捉start包和failure//repetition
 unsigned char state; //状态
 unsigned int interval; //间隔

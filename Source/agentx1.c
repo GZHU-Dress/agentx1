@@ -185,6 +185,7 @@ int main(int argc, char **argv) { //主函数
 			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL ) < 0) { //创建线程
 		error("pthread_create() error"); //出错提示
 	}
+	signal(SIGALRM, repeat_wan);//设置定时器
 	pthread_join(tid_wan,NULL);//等待wan线程
 	pthread_join(tid_lan,NULL);//等待lan线程
 	return 0;

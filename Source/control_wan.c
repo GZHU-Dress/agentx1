@@ -69,12 +69,10 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 }
 void repeat_wan(int sig) {	//wan中继
 	if(state>=X_OFF){
-		if(state==X_RE){
-			puts("Modifying the Echo packet...");
-			set_echo(data_echo); //修改echo
-			puts("Sending the Echo packet to server...");
-			send_wan(data_echo, size_echo); //发送echo
-		}
+		puts("Modifying the Echo packet...");
+		set_echo(data_echo); //修改echo
+		puts("Sending the Echo packet to server...");
+		send_wan(data_echo, size_echo); //发送echo
 		alarm(interval);//延时心跳
 	}
 }
