@@ -19,14 +19,14 @@ void help(void) { //显示帮助相关信息
 	puts("Usage: agentx1 [-h] Help to use");
 	puts("\t[-L <interface-name>] LAN (default br-lan)");
 	puts("\t[-W <interface-name>] WAN (default br-wan)");
-	puts("\t[-p NONUSE(default)|LOCAL|BOTH] Promiscuous mode");
-	puts("\t[-a NONE(default)|FORMER|LATER|MIDDLE] DHCP function");
+	puts("\t[-p (default)NONUSE|LOCAL|BOTH] Promiscuous mode");
+	puts("\t[-a (default)NONE|FORMER|LATER|MIDDLE] DHCP function");
 	puts("\t[-u <account>] Binding account (default by client)");
 	puts("\t[-i <address>] Binding static (default by local) IP");
 	puts("\t[-n <address>] Binding static (default by local) netmask");
 	puts("\t[-g <address>] Binding (default 0.0.0.0) gateway");
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
-	puts("For more information, visit: http://ref.so/f19q"); //todo 改链接
+	puts("For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
 }
 /*void check(void){
  int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
