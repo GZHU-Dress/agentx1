@@ -14,6 +14,8 @@
 
 *此软献予我的朋友，以挽青春不舍昼夜……*
 
+*@狂男风*
+
 ## 向导 ##
 
 * 不同用途的产品分发均可于[下载区](http://bitbucket.org/CrazyBoyFeng/agentx1/downloads)得到。

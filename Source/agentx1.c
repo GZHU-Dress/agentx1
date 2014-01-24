@@ -20,12 +20,12 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-L <interface-name>] LAN (default br-lan)");
 	puts("\t[-W <interface-name>] WAN (default br-wan)");
 	puts("\t[-p (default)NONUSE|LOCAL|BOTH] Promiscuous mode");
-	puts("\t[-a (default)NONE|FORMER|LATER|MIDDLE] DHCP function");
-	puts("\t[-u <account>] Binding account (default by client)");
+	puts("\t[-a (default)NONE|AFTER|BEFORE|BETWEEN] DHCP function");
 	puts("\t[-i <address>] Binding static (default by local) IP");
 	puts("\t[-n <address>] Binding static (default by local) netmask");
 	puts("\t[-g <address>] Binding (default 0.0.0.0) gateway");
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
+	puts("\t[-u <account>] Binding (default by client) account");
 	puts("For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
 }
 /*void check(void){
@@ -84,11 +84,11 @@ void config(int argc, char **argv) { //配置
 		case 'a': //dhcp
 			if (strcmp("NONE", optarg) == 0) {
 				dhcp_wan = 0;
-			} else if (strcmp("LATER", optarg) == 0) {
+			} else if (strcmp("AFTER", optarg) == 0) {
 				dhcp_wan = 1;
-			} else if (strcmp("MIDDLE", optarg) == 0) {
+			} else if (strcmp("BETWEEN", optarg) == 0) {
 				dhcp_wan = 2;
-			} else if (strcmp("FORMER", optarg) == 0) {
+			} else if (strcmp("BEFORE", optarg) == 0) {
 				dhcp_wan = 3;
 			} else {
 				printf("The DHCP mode %s is invalid, so abort!\n", optarg);
