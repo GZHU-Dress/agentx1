@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name        : control_wan.c
- Author      : Crazy Boy Feng
+ Author      : CrazyBoyFeng
  Copyright   : GNU General Public License
  Description : Agent X One WAN controller in C, ANSI-style
  ============================================================================
