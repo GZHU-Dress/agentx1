@@ -198,6 +198,7 @@ void work_wan(void) { //wan线程
 				break;
 			} //type
 		}	//state
+		fflush(stdout); //刷新输出缓冲区
 	}	//while
 	error("recvfrom() error");	//监听失败
 }

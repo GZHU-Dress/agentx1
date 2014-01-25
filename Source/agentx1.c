@@ -175,8 +175,9 @@ void config(int argc, char **argv) { //配置
 		printf("Before authentication\n");
 		break;
 	}
+
 }
-void error(char *msg) {
+void error(char *msg) { //处理错误信息
 	perror(msg); //输出错误
 	exit(1); //错误退出
 }

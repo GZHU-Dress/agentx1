@@ -192,8 +192,9 @@ void work_lan(void) { //lan线程
 				puts("Refreshing the network interfaces...");
 				refresh_wan(); //dhcp并输出
 				break;
-			}
+			} //switch
 		}	//if
+		fflush(stdout); //刷新输出缓冲区
 	}	//while
 	error("recvfrom() error");	//监听失败
 }
