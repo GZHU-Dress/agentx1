@@ -2,7 +2,6 @@
  ============================================================================
  Name        : agentx1.h
  Author      : Crazy Boy Feng
- Version     :
  Copyright   : GNU General Public License
  Description : Agent X One header in C, ANSI-style
  ============================================================================

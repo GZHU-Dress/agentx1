@@ -2,7 +2,6 @@
  ============================================================================
  Name        : control_lan.c
  Author      : Crazy Boy Feng
- Version     :
  Copyright   : GNU General Public License
  Description : Agent X One LAN controller in C, ANSI-style
  ============================================================================

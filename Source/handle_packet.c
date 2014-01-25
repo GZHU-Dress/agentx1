@@ -2,7 +2,6 @@
  ============================================================================
  Name        : handle-packet.c
  Author      : Crazy Boy Feng
- Version     :
  Copyright   : GNU General Public License
  Description : Agent X One packet data handler in C, ANSI-style
  ============================================================================
