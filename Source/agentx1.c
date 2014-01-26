@@ -8,7 +8,7 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 3]");//XXX 发布之前改版本号
+	puts("Agent X One [Version: 3]"); //XXX 发布之前改版本号
 	puts("Homepage: http://bitbucket.org/CrazyBoyFeng/agentx1"); //为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://gnu.org/licenses/gpl.html"); //衍生请不要修改协议
 	puts("Copyright (C) 2013-2014 CrazyBoyFeng. All rights reserved."); //狂男风
@@ -25,7 +25,8 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-g <address>] Binding (default 0.0.0.0) gateway");
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
 	puts("\t[-u <account>] Binding (default by client) account");
-	puts("For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
+	puts(
+			"For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
 }
 void config(int argc, char **argv) { //配置
 	about(); //输出软件产品相关信息
@@ -159,8 +160,8 @@ void config(int argc, char **argv) { //配置
 		break;
 	}
 	printf("\tAccount: ");
-	if(strlen(account_wan)>1){//设置了account
-		printf(account_wan);
+	if (strlen(account_wan) > 1) { //设置了account
+		printf("%s\n", account_wan);
 	}
 }
 void error(char *msg) { //处理错误信息
