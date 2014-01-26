@@ -30,12 +30,12 @@ void help(void) { //显示帮助相关信息
 void config(int argc, char **argv) { //配置
 	about(); //输出软件产品相关信息
 	promiscuous = 0;	//混杂模式
-	account_wan = '\0';	//用户绑定账户
 	dhcp_wan = 0; //不使用0，之后1，两次2，之前3
 	ip_wan = 0;
 	netmask_wan = 0;
 	gateway_wan = 0;
 	dns_wan = 0;
+	account_wan = '\0';	//用户绑定账户
 	opterr = 0; //错误操作
 	char *lan = "br-lan";
 	char *wan = "br-wan";
@@ -60,9 +60,6 @@ void config(int argc, char **argv) { //配置
 						optarg);
 				opterr = 2;
 			}
-			break;
-		case 'u': //用户账户
-			account_wan = optarg;
 			break;
 		case 'a': //dhcp
 			if (strcmp("NONE", optarg) == 0) {
@@ -105,6 +102,9 @@ void config(int argc, char **argv) { //配置
 				printf("The DNS %s is invalid, so abort!\n", optarg);
 				opterr = 2;
 			}
+			break;
+		case 'u': //用户账户
+			account_wan = optarg;
 			break;
 		case 'h': //help
 			opterr = -1;
@@ -158,7 +158,10 @@ void config(int argc, char **argv) { //配置
 		printf("Before authentication\n");
 		break;
 	}
-
+	printf("\tAccount: ");
+	if(strlen(account_wan)>1){//设置了account
+		printf(account_wan);
+	}
 }
 void error(char *msg) { //处理错误信息
 	perror(msg); //输出错误
@@ -176,6 +179,7 @@ int main(int argc, char **argv) { //主函数
 		error("pthread_create() error"); //出错提示
 	}
 	signal(SIGALRM, repeat_wan); //设置中继定时器
+	fflush(stdout); //刷新输出缓冲
 	pthread_join(tid_wan, NULL ); //等待wan线程
 	pthread_join(tid_lan, NULL ); //等待lan线程
 	return 0;
