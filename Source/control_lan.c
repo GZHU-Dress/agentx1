@@ -162,16 +162,6 @@ void work_lan(void) { //lan线程
 				size_buffer = len_lan;
 				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
 				break;
-				/*case 0xbf:	//hello
-				 puts("Receiving a EAPOL-Hello packet from client!");
-				 puts("Reading the interval argument...");
-				 get_interval(buf_lan);	//收集中继间隔
-				 puts("Reading the repeat parameters...");
-				 get_hello(buf_lan);	//修正key和count
-				 puts("Sending the EAPOL-Hello packet to server...");
-				 send_wan(buf_lan, len_lan);	//发送hello
-				 alarm(interval);//启动定时器
-				 break;*/	//为了防止客户端应答提示success包从而导致hello过于频繁，off状态不再转发hello，直接中继
 			}
 		} else if (state == X_RE) {
 			switch (buf_lan[0x0f]) { //比较type

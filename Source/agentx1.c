@@ -27,24 +27,8 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-u <account>] Binding (default by client) account");
 	puts("For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
 }
-/*void check(void){
- int file = open ("/var/run/agentx1.pid", O_RDWR|O_CREAT);//创建锁文件
- if (file < 0) {//创建失败
- error("open() error");//输出错误
- }
- struct flock file_lock;//锁结构
- file_lock.l_start = 0;//起始位置
- file_lock.l_len = 0;//长度
- file_lock.l_whence = SEEK_SET;//状态
- file_lock.l_type = F_WRLCK;//标志位
- file_lock.l_pid = getpid();//pid
- if (fcntl(file, F_SETLK, &file_lock) < 0) {//写入锁
- error("fcntl() error");//写入失败
- }
- }*/
 void config(int argc, char **argv) { //配置
 	about(); //输出软件产品相关信息
-	//check();//检测进程文件锁
 	promiscuous = 0;	//混杂模式
 	account_wan = '\0';	//用户绑定账户
 	dhcp_wan = 0; //不使用0，之后1，两次2，之前3

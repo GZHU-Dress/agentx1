@@ -74,6 +74,7 @@ void repeat_wan(int sig) {	//wan中继
 		send_wan(data_hello, size_hello); //发送hello
 		alarm(interval); //延时心跳
 	}
+	fflush(stdout);
 }
 void open_wan(void) { //获得mac
 	if (ioctl(sock_wan, SIOCGIFFLAGS, &if_wan) < 0) { //准备混杂模式
