@@ -36,7 +36,7 @@ void config(int argc, char **argv) { //配置
 	netmask_wan = 0;
 	gateway_wan = 0;
 	dns_wan = 0;
-	account_wan = '\0';	//用户绑定账户
+	account_wan = "\0";	//用户绑定账户
 	opterr = 0; //错误操作
 	char *lan = "br-lan";
 	char *wan = "br-wan";

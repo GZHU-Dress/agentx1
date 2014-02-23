@@ -89,21 +89,21 @@ void get_hello(unsigned char *data) { //从hello得到中继变量
 	printf("\tHello work count: %d\n", hello_count);
 }
 int set_identity(unsigned char *data, int size) {	//修改用户名
-	unsigned short int organ_head_length;	//包头长度
-	memcpy(&organ_head_length, data + 0x10, 2);	//得到长度
-	organ_head_length = ntohs(organ_head_length);	//转换字节序
-	unsigned char organ_account_length;	//原始名字长度
-	switch (data[0x16]) {	//类型
-	case 0x01:	//identity
-		organ_account_length = organ_head_length - 5;
-		break;
-	case 0x04:	//md5
-		organ_account_length = organ_head_length - data[0x17] - 6;
-		break;
-	}
-	unsigned int identity = 0x12 + organ_head_length - organ_account_length;//名字在data中的指针地址
 	unsigned char account_length = strlen(account_wan);	//新名字的长度
-	if (account_length > 1) {	//如果设置了用户名参数
+	if(account_length > 1){//如果设置了用户名参数
+		unsigned short int organ_head_length;	//包头长度
+		memcpy(&organ_head_length, data + 0x10, 2);	//得到长度
+		organ_head_length = ntohs(organ_head_length);	//转换字节序
+		unsigned char organ_account_length;	//原始名字长度
+		switch (data[0x16]) {	//类型
+		case 0x01:	//identity
+			organ_account_length = organ_head_length - 5;
+			break;
+		case 0x04:	//md5
+			organ_account_length = organ_head_length - data[0x17] - 6;
+			break;
+		}
+		unsigned int identity = 0x12 + organ_head_length - organ_account_length;//名字在data中的指针地址
 		unsigned char data_temp[1024];	//临时转换空间
 		memcpy(data_temp, data, size);	//备份原数据
 		unsigned short int head_length = organ_head_length
@@ -118,11 +118,6 @@ int set_identity(unsigned char *data, int size) {	//修改用户名
 				size - 0x10 - organ_head_length);	//将账户之后的部分复制到包中
 		size = size - organ_head_length + head_length;	//新的包长度
 		printf("\tIdentity account: %s\n", account_wan);
-	} else {	//没有设置账户参数
-		char account[100];	//账户
-		memcpy(account, data + identity, organ_account_length);	//得到名字
-		account[organ_account_length] = 0;	//设置结束符
-		printf("\tIdentity account: %s\n", account);
 	}
 	return size;
 }
