@@ -164,13 +164,11 @@ void config(int argc, char **argv) { //配置
 		printf("%s\n", account_wan);
 	}
 }
-void close(void) { //进程关闭回调
-	switch (state) {
-	case X_RE:
+void finish(void) { //进程关闭回调
+	if (state == X_RE) {
 		puts("Sending the EAPOL-Logoff packet to server...");
 		set_head(data_buffer, size_buffer);	//修改加密位
 		send_wan(data_buffer, size_buffer);	//发logoff
-		break;
 	}
 	fflush(stdout);
 }
@@ -183,7 +181,7 @@ int main(int argc, char **argv) { //主函数
 	puts("Turning the work mode to Initialization...");
 	state = X_PRE; //初始状态
 	interval = 0; //间隔
-	atexit(close); //进程关闭回调
+	atexit(finish); //进程关闭回调
 	puts("Opening the main work threads...");
 	unsigned long int tid_lan, tid_wan;	//线程
 	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL ) < 0
