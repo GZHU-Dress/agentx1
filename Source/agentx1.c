@@ -165,12 +165,10 @@ void config(int argc, char **argv) { //配置
 	}
 }
 void finish(void) { //进程关闭回调
-	switch (state) {
-	case X_RE:
+	if(state == X_RE){
 		puts("Sending the EAPOL-Logoff packet to server...");
 		set_head(data_buffer, size_buffer);	//修改加密位
 		send_wan(data_buffer, size_buffer);	//发logoff
-		break;
 	}
 	fflush(stdout);
 }
