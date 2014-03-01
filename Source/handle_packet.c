@@ -96,7 +96,7 @@ int set_identity(unsigned char *data, int size) {	//修改用户名
 		unsigned short int organ_head_length;	//包头长度
 		memcpy(&organ_head_length, data + 0x10, 2);	//得到长度
 		organ_head_length = ntohs(organ_head_length);	//转换字节序
-		unsigned char organ_account_length;	//原始名字长度
+		unsigned char organ_account_length = 0 ;	//原始名字长度
 		switch (data[0x16]) {	//类型
 		case 0x01:	//identity
 			organ_account_length = organ_head_length - 5;
