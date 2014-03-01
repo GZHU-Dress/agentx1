@@ -58,6 +58,7 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	} else if (dhcp_wan == 3 && (state == X_PRE || state == X_RE)) { //pre和re状态不会在认证前dhcp
 		return;
 	}
+	puts("Refreshing the network interfaces...");
 	ip_wan = 0; //重新初始化
 	netmask_wan = 0; //重新初始化
 	char command[100] = "udhcpc -i "; //dhcp命令
