@@ -68,11 +68,15 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	print_wan();	//取出并打印地址
 }
 void repeat_wan(int sig) {	//wan中继
-	if (state >= X_OFF) {
-		puts("Modifying the EAPOL-Hello packet...");
-		set_hello(data_hello); //修改hello
-		puts("Sending the EAPOL-Hello packet to server...");
-		send_wan(data_hello, size_hello); //发送hello
+	if (sig == SIGALRM) {
+		if (state >= X_OFF) {
+			puts("Modifying the EAPOL-Hello packet...");
+			set_hello(data_hello); //修改hello
+			puts("Sending the EAPOL-Hello packet to server...");
+			send_wan(data_hello, size_hello); //发送hello
+		} else {
+			interval = 0; //重置间隔
+		}
 		alarm(interval); //延时心跳
 	}
 	fflush(stdout);

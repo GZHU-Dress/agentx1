@@ -180,8 +180,6 @@ int main(int argc, char **argv) { //主函数
 	config(argc, argv); //初始化参数
 	puts("Turning the work mode to Initialization...");
 	state = X_PRE; //初始状态
-	interval = 0; //间隔
-	atexit(finish); //进程关闭回调
 	puts("Opening the main work threads...");
 	unsigned long int tid_lan, tid_wan;	//线程
 	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL ) < 0
@@ -189,6 +187,7 @@ int main(int argc, char **argv) { //主函数
 		error("pthread_create() error"); //出错提示
 	}
 	signal(SIGALRM, repeat_wan); //设置中继定时器
+	atexit(finish); //进程关闭回调
 	fflush(stdout); //刷新输出缓冲
 	pthread_join(tid_wan, NULL ); //等待wan线程
 	pthread_join(tid_lan, NULL ); //等待lan线程

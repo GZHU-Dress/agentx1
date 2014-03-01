@@ -123,11 +123,10 @@ void work_lan(void) { //lan线程
 					size_buffer = set_success(data_buffer, size_buffer);//修改提示
 					puts("Turning the work mode to Animation...");
 					state = X_OFF;	//等待（自动）模式
+					sleep(interval);//等待中继的时机
+					repeat_wan(SIGALRM);//手动启动中继
 					puts("Sending the EAP-Success packet to client...");
 					send_lan(data_buffer, size_buffer);	//发送success（注意客户端会立即回应hello）
-					alarm(interval);	//启动中继定时器
-				} else {
-					puts("Resetting the invalid Hello work...");
 				}
 				break;
 			case 0x00:	//eap
