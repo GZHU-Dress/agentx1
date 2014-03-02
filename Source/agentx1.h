@@ -13,7 +13,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
@@ -45,8 +44,6 @@ unsigned int dns_wan; //DNS
 unsigned char mac_wan[6]; //mac地址
 unsigned char server_wan[6]; //初始服务器地址
 //PACKET
-int size_hello;
-unsigned char data_hello[1024]; //重复包
 int size_buffer;
 unsigned char data_buffer[1024]; //临时包
 //MAIN
@@ -58,7 +55,6 @@ void work_lan(void); //lan线程
 //WAN
 void print_wan(void); //取出并打印地址
 void refresh_wan(void); //dhcp并输出
-void repeat_wan(int sig); //wan中继
 void find_wan(char *interface); //打开wan连接
 void send_wan(unsigned char *buffer, int length); //wan发包
 void work_wan(void); //wan线程

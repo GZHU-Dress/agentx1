@@ -8,7 +8,7 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 4]"); //XXX 发布之前改版本号
+	puts("Agent X One [Version: 5]"); //XXX 发布之前改版本号
 	puts("Homepage: http://bitbucket.org/CrazyBoyFeng/agentx1"); //为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://gnu.org/licenses/gpl.html"); //衍生请不要修改协议
 	puts("Copyright (C) 2013-2014 CrazyBoyFeng. All rights reserved."); //狂男风
@@ -165,7 +165,7 @@ void config(int argc, char **argv) { //配置
 	}
 }
 void finish(void) { //进程关闭回调
-	if(state == X_RE){
+	if (state == X_RE) {
 		puts("Sending the EAPOL-Logoff packet to server...");
 		set_head(data_buffer, size_buffer);	//修改加密位
 		send_wan(data_buffer, size_buffer);	//发logoff
@@ -182,14 +182,13 @@ int main(int argc, char **argv) { //主函数
 	state = X_PRE; //初始状态
 	puts("Opening the main work threads...");
 	unsigned long int tid_lan, tid_wan;	//线程
-	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL ) < 0
-			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL ) < 0) { //创建线程
+	if (pthread_create(&tid_lan, NULL, (void *) work_lan, NULL) < 0
+			|| pthread_create(&tid_wan, NULL, (void *) work_wan, NULL) < 0) { //创建线程
 		error("pthread_create() error"); //出错提示
 	}
-	signal(SIGALRM, repeat_wan); //设置中继定时器
 	atexit(finish); //进程关闭回调
 	fflush(stdout); //刷新输出缓冲
-	pthread_join(tid_wan, NULL ); //等待wan线程
-	pthread_join(tid_lan, NULL ); //等待lan线程
+	pthread_join(tid_wan, NULL); //等待wan线程
+	pthread_join(tid_lan, NULL); //等待lan线程
 	return 0;
 }

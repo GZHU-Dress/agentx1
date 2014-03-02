@@ -67,20 +67,7 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	system(command); //更换dhcp
 	print_wan();	//取出并打印地址
 }
-void repeat_wan(int sig) {	//wan中继
-	if (sig == SIGALRM) {
-		if (state >= X_OFF) {
-			puts("Modifying the EAPOL-Hello packet...");
-			set_hello(data_hello); //修改hello
-			puts("Sending the EAPOL-Hello packet to server...");
-			send_wan(data_hello, size_hello); //发送hello
-		} else {
-			interval = 0; //重置间隔
-		}
-		alarm(interval); //延时心跳
-	}
-	fflush(stdout);
-}
+
 void open_wan(void) { //获得mac
 	if (ioctl(sock_wan, SIOCGIFFLAGS, &if_wan) < 0) { //准备混杂模式
 		error("WAN ioctl() error"); //出错提示
@@ -122,7 +109,7 @@ void work_wan(void) { //wan线程
 	puts("Receiving the packets from WAN...");
 	int len_wan; //包长度
 	unsigned char buf_wan[1024]; //缓冲区
-	while ((len_wan = recvfrom(sock_wan, buf_wan, 1024, 0, NULL, NULL )) > 0) { //循环接收
+	while ((len_wan = recvfrom(sock_wan, buf_wan, 1024, 0, NULL, NULL)) > 0) { //循环接收
 		if (buf_wan[0x0f] != 0x00 || memcmp(mac_wan, buf_wan, 6) != 0) { //不是eap包或者不是发给自己的包
 			continue; //丢弃
 		} else if (state == X_ON) { //转发状态
