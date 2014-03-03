@@ -29,16 +29,19 @@ void find_lan(char *interface) { //打开lan连接
 int size_hello;
 unsigned char data_hello[1024]; //重复包
 void hello_lan(void) {	//中继
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL); // 设置其他线程可以cancel掉此线程
 	fflush(stdout);
-	sleep(interval);
-	if (state == X_RE) {
+	if (state >= X_OFF) { //自主心跳的时机
 		puts("Modifying the EAPOL-Hello packet...");
 		set_hello(data_hello); //修改hello
 		puts("Sending the EAPOL-Hello packet to server...");
 		send_wan(data_hello, size_hello); //发送hello
+		sleep(interval);
 		hello_lan(); //再次发送并检测
-	} else if (state != X_OFF) { //非中继
-		interval = 0; //重置间隔
+	} else if (state < X_OFF) { //非中继
+		puts("Resetting the invalid repeat work...");
+		time_lan = 0; //重置时间标志
+		repeat_lan = 0; //重置中继标志
 	}
 }
 void open_lan(void) {
@@ -79,8 +82,7 @@ void send_lan(unsigned char *buffer, int length) { //lan发包
 	}
 }
 void work_lan(void) { //lan线程
-	unsigned long int tid_hello;	//中继线程
-	interval = 0;	//初始化中继间隔参数
+	unsigned long int tid_hello = 0;	//中继线程
 	puts("Opening the LAN socket connection...");
 	open_lan(); //查询接口
 	puts("Receiving the packets from LAN...");
@@ -90,8 +92,10 @@ void work_lan(void) { //lan线程
 		if (state == X_PRE) { //准备状态
 			switch (buf_lan[0x0f]) { //比较type
 			case 0x01: //start包
-				time_lan = 0; //初始时间标志
-				repeat_lan = 0; //初始中继标志
+				if (tid_hello != 0) { //中继线程已启动
+					pthread_cancel(tid_hello); //关闭线程
+				}
+				interval = time_lan = repeat_lan = tid_hello = 0;	//初始化中继参数
 				puts("Receiving a EAPOL-Start packet from LAN!");
 				refresh_wan(); //dhcp并输出
 				puts("Reading the client MAC address...");
@@ -107,8 +111,10 @@ void work_lan(void) { //lan线程
 		} else if (state == X_ON && memcmp(client_lan, buf_lan + 6, 6) == 0) { //转发状态且来自于指定客户端
 			switch (buf_lan[0x0f]) {	//比较type
 			case 0x01:	//start
-				time_lan = 0; //初始时间标志
-				repeat_lan = 0; //初始中继标志
+				if (tid_hello != 0) {	//中继线程已启动
+					pthread_cancel(tid_hello);	//关闭线程
+				}
+				time_lan = repeat_lan = tid_hello = 0;	//初始化中继参数
 				puts("Receiving a EAPOL-Start packet from client!");
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //锁定客户端
@@ -140,13 +146,12 @@ void work_lan(void) { //lan线程
 					size_buffer = set_success(data_buffer, size_buffer);//修改提示
 					puts("Turning the work mode to Animation...");
 					state = X_OFF;	//等待（自动）模式
+					puts("Sending the EAP-Success packet to client...");
+					send_lan(data_buffer, size_buffer);	//发送success（注意客户端会立即回应hello）
 					if (pthread_create(&tid_hello, NULL, (void *) hello_lan,
 							NULL) < 0) { //启动心跳检测进程
 						error("pthread_create() error"); //出错提示
 					}
-					puts("Sending the EAP-Success packet to client...");
-					sleep(interval); //等待中继的时机
-					send_lan(data_buffer, size_buffer);	//发送success（注意客户端会立即回应hello）
 				}
 				break;
 			case 0x00:	//eap
@@ -180,25 +185,26 @@ void work_lan(void) { //lan线程
 				size_buffer = len_lan;
 				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
 				break;
-			case 0xbf:	//echo
-				puts("Receiving a EAPOL-Hello packet from client!");
-				puts("Reading the interval argument...");
-				get_interval(buf_lan);	//收集中继间隔
-				puts("Modifying the EAPOL-Hello packet...");
-				set_hello(buf_lan);	//修正key和count
-				puts("Sending the EAPOL-Hello packet to server...");
-				send_wan(buf_lan, len_lan);	//发送echo
-				if (pthread_create(&tid_hello, NULL, (void *) hello_lan, NULL)
-						< 0) { //启动心跳检测进程
-					error("pthread_create() error"); //出错提示
-				}
-				break;
+				/*case 0xbf:	//echo
+				 puts("Receiving a EAPOL-Hello packet from client!");
+				 puts("Reading the interval argument...");
+				 get_interval(buf_lan);	//收集中继间隔
+				 puts("Modifying the EAPOL-Hello packet...");
+				 set_hello(buf_lan);	//修正key和count
+				 puts("Sending the EAPOL-Hello packet to server...");
+				 send_wan(buf_lan, len_lan);	//发送echo
+				 if (pthread_create(&tid_hello, NULL, (void *) hello_lan, NULL)
+				 < 0) { //启动心跳检测进程
+				 error("pthread_create() error"); //出错提示
+				 }
+				 sleep(interval / 2); //延时捕捉
+				 break;*/
 			}
 		} else if (state == X_RE) {
 			switch (buf_lan[0x0f]) { //比较type
 			case 0x01: //start包
-				time_lan = 0; //初始时间标志
-				repeat_lan = 0; //初始中继标志
+				pthread_cancel(tid_hello); //关闭中继线程
+				interval = time_lan = repeat_lan = tid_hello = 0;	//初始化中继参数
 				puts("Receiving a EAPOL-Start packet from LAN!");
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //取出client
