@@ -66,7 +66,6 @@ void set_hello(unsigned char *data) { //修改hello包
 void get_interval(unsigned char *data) { //得到时间间隔
 	long int time_temp; //临时时间节点
 	time(&time_temp); //当前时间
-	printf("\tHello repeat time: %ld\n", time_temp); //输出响应时间，便于计算时差
 	if (time_lan != 0) { //存在起始时间标志
 		interval =
 				interval != 0 ?

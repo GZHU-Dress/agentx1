@@ -95,13 +95,16 @@ void filter_wan(unsigned char *buffer) { //锁定服务器
 			server_wan[4], server_wan[5]);
 }
 void send_wan(unsigned char *buffer, int length) {	//wan发包
-	if (promiscuous == 0) {	//非混杂模式修改dst地址
+	if (promiscuous != 2) {	//非混杂模式修改dst地址
 		memcpy(buffer, server_wan, 6); //修改dst为server
 	}
 	memcpy(buffer + 6, mac_wan, 6);	//修改src为wan
 	if (sendto(sock_wan, buffer, length, 0, NULL, 0) < 0) {
 		error("WAN sendto() error");	//错误提示
 	}
+	long int time_temp; //临时时间节点
+	time(&time_temp); //当前时间
+	printf("\tPacket to WAN: %ld\n", time()); //输出响应时间
 }
 void work_wan(void) { //wan线程
 	puts("Opening the WAN socket connection...");
