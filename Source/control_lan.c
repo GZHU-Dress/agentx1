@@ -80,7 +80,7 @@ void send_lan(unsigned char *buffer, int length) { //lan发包
 	if (sendto(sock_lan, buffer, length, 0, NULL, 0) < 0) {
 		error("LAN sendto() error");	//错误提示
 	}
-	printf("\tPacket to LAN: %ld\n", time(NULL)); //输出响应时间
+	printf("\tPacket over LAN: %ld\n", time(NULL)); //输出响应时间
 }
 void work_lan(void) { //lan线程
 	unsigned long int tid_hello = 0;	//中继线程

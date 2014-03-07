@@ -102,9 +102,7 @@ void send_wan(unsigned char *buffer, int length) {	//wan发包
 	if (sendto(sock_wan, buffer, length, 0, NULL, 0) < 0) {
 		error("WAN sendto() error");	//错误提示
 	}
-	long int time_temp; //临时时间节点
-	time(&time_temp); //当前时间
-	printf("\tPacket to WAN: %ld\n", time(NULL)); //输出响应时间
+	printf("\tPacket over WAN: %ld\n", time(NULL)); //输出响应时间
 }
 void work_wan(void) { //wan线程
 	puts("Opening the WAN socket connection...");
