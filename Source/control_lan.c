@@ -32,13 +32,13 @@ void hello_lan(void) {	//中继
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL); // 设置其他线程可以cancel掉此线程
 	fflush(stdout);
 	if (state >= X_OFF) { //自主心跳的时机
+		sleep(interval);
 		puts("Modifying the EAPOL-Hello packet...");
 		set_hello(data_hello); //修改hello
 		puts("Sending the EAPOL-Hello packet to server...");
 		send_wan(data_hello, size_hello); //发送hello
-		sleep(interval);
 		hello_lan(); //再次发送并检测
-	} else if (state < X_OFF) { //非中继
+	} else if (state <= X_ON) { //非中继
 		puts("Resetting the invalid repeat work...");
 		time_lan = 0; //重置时间标志
 		repeat_lan = 0; //重置中继标志
@@ -80,7 +80,7 @@ void send_lan(unsigned char *buffer, int length) { //lan发包
 	if (sendto(sock_lan, buffer, length, 0, NULL, 0) < 0) {
 		error("LAN sendto() error");	//错误提示
 	}
-	printf("\tPacket to LAN: %ld\n", time()); //输出响应时间
+	printf("\tPacket to LAN: %ld\n", time(NULL)); //输出响应时间
 }
 void work_lan(void) { //lan线程
 	unsigned long int tid_hello = 0;	//中继线程
