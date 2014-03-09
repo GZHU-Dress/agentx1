@@ -159,9 +159,8 @@ void config(int argc, char **argv) { //配置
 		printf("Before authentication\n");
 		break;
 	}
-	printf("\tAccount: ");
 	if (strlen(account_wan) > 1) { //设置了account
-		printf("%s\n", account_wan);
+		printf("\tAccount: %s\n", account_wan);
 	}
 }
 void finish(void) { //进程关闭回调
