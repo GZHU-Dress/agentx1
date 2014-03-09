@@ -55,7 +55,7 @@ void set_hello(unsigned char *data) { //修改hello包
 	hello_count++; //计数器
 	printf("\tHello work count: %d\n", hello_count);
 	unsigned char *hello_code; //数组
-	unsigned char hello_net; //转换中间变量
+	unsigned int hello_net; //转换中间变量
 	hello_net = htonl(hello_key + hello_count); //计算并转换
 	hello_code = (unsigned char *) &hello_net; //key+count
 	memcpy(data + 0x18, get_code(hello_code, 4), 4); //译码

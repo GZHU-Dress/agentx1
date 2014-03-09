@@ -31,8 +31,8 @@ unsigned char data_hello[1024]; //重复包
 void hello_lan(void) {	//中继
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL); // 设置其他线程可以cancel掉此线程
 	fflush(stdout);
+	sleep(interval);
 	if (state >= X_OFF) { //自主心跳的时机
-		sleep(interval);
 		puts("Modifying the EAPOL-Hello packet...");
 		set_hello(data_hello); //修改hello
 		puts("Sending the EAPOL-Hello packet to server...");
