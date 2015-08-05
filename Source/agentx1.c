@@ -8,10 +8,10 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 4]"); //XXX 发布之前改版本号
+	puts("Agent X One [Version: 5]"); //XXX 发布之前改版本号
 	puts("Homepage: http://bitbucket.org/CrazyBoyFeng/agentx1"); //为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://gnu.org/licenses/gpl.html"); //衍生请不要修改协议
-	puts("Copyright (C) 2013-2014 CrazyBoyFeng. All rights reserved."); //狂男风
+	puts("Copyright (C) 2013-2015 CrazyBoyFeng. All rights reserved."); //狂男风
 	puts("This is dedicated to my friends, for the passing good times...");	//非常希望这句话在各种衍生中也能够得以保留
 }
 void help(void) { //显示帮助相关信息
