@@ -124,7 +124,7 @@ void config(int argc, char **argv) { //配置
 	}
 	find_lan(lan); //打开网卡
 	find_wan(wan); //打开网卡
-	printf("\tPromiscUous mode: ");
+	printf("\tPromiscuous mode: ");
 	switch (promiscuous % 3) { //比较promiscuous_lan
 	case 0: //关闭
 		printf("Out of use\n");
