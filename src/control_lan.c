@@ -134,7 +134,7 @@ void work_lan(void) { //lan线程
 			case 0xbf:	//hello
 				puts("Receiving a EAPOL-Hello packet from client!");
 				puts("Reading the interval argument...");
-				get_interval(buf_lan);	//收集中继间隔
+				get_interval(/*buf_lan*/);	//收集中继间隔
 				puts("Reading the repeat parameters...");
 				get_hello(buf_lan);	//收集中继参数
 				puts("Sending the EAPOL-Hello packet to server...");

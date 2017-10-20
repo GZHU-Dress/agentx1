@@ -60,7 +60,7 @@ void send_wan(unsigned char *buffer, int length); //wan发包
 void work_wan(void); //wan线程
 //PACKET
 void get_hello(unsigned char *data); //从hello得到中继变量
-void get_interval(unsigned char *data); //得到时间间隔
+void get_interval(/*unsigned char *data*/); //得到时间间隔
 void get_success(unsigned char *data); //从success得到中继变量
 void set_hello(unsigned char *data); //修改hello包
 void set_head(unsigned char *data, int size); //修改加密位

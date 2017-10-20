@@ -63,7 +63,7 @@ void set_hello(unsigned char *data) { //修改hello包
 	hello_code = (unsigned char *) &hello_net; //count
 	memcpy(data + 0x22, get_code(hello_code, 4), 4); //译码
 }
-void get_interval(unsigned char *data) { //得到时间间隔
+void get_interval(/*unsigned char *data*/) { //得到时间间隔
 	long int time_temp; //临时时间节点
 	time(&time_temp); //当前时间
 	if (time_lan != 0) { //存在起始时间标志
