@@ -54,7 +54,7 @@ void send_lan(unsigned char *buffer, int length); //lan发包
 void work_lan(void); //lan线程
 //WAN
 void print_wan(void); //取出并打印地址
-void refresh_wan(void); //dhcp并输出
+//void refresh_wan(void); //dhcp并输出
 void find_wan(char *interface); //打开wan连接
 void send_wan(unsigned char *buffer, int length); //wan发包
 void work_wan(void); //wan线程

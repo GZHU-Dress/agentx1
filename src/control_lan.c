@@ -98,7 +98,7 @@ void work_lan(void) { //lan线程
 				}
 				interval = time_lan = repeat_lan = tid_hello = 0;	//初始化中继参数
 				puts("Receiving a EAPOL-Start packet from LAN!");
-				refresh_wan(); //dhcp并输出
+				//refresh_wan(); //dhcp并输出
 				puts("Reading the client MAC address...");
 				filter_lan(buf_lan); //锁定客户端
 				puts("Modifying the EAPOL-Start packet...");
@@ -216,7 +216,7 @@ void work_lan(void) { //lan线程
 				puts("Storing the EAPOL-Start packet...");
 				size_buffer = len_lan;
 				memcpy(data_buffer, buf_lan, size_buffer);	//复制数据
-				refresh_wan(); //dhcp并输出
+				//refresh_wan(); //dhcp并输出
 				break;
 			} //switch
 		}	//if

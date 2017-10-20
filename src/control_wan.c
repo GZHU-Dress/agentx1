@@ -50,7 +50,7 @@ void print_wan(void) { //取出并打印地址
 	addr = (unsigned char *) (&dns_wan); //dns
 	printf("\tDNS: %d.%d.%d.%d\n", addr[0], addr[1], addr[2], addr[3]);
 }
-void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的过程
+/*void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的过程
 	if (dhcp_wan == 0) { //不使用dhcp
 		return;
 	} else if (dhcp_wan == 1 && state == X_ON) { //on状态不会在认证后dhcp
@@ -66,7 +66,7 @@ void refresh_wan(void) { //dhcp及获得网络信息//XXX 调查二次认证的�
 	strcat(command, ">/dev/null"); //屏蔽输出
 	system(command); //更换dhcp
 	print_wan();	//取出并打印地址
-}
+}*/
 
 void open_wan(void) { //获得mac
 	if (ioctl(sock_wan, SIOCGIFFLAGS, &if_wan) < 0) { //准备混杂模式
@@ -131,8 +131,8 @@ void work_wan(void) { //wan线程
 			} else if (buf_wan[0x12] == 0x03
 					&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //success
 				puts("Receiving a EAP-Success packet from server!");
-				puts("Refreshing the network interfaces...");
-				refresh_wan(); //dhcp并输出
+				//puts("Refreshing the network interfaces...");
+				//refresh_wan(); //dhcp并输出
 				puts("Storing the EAP-Success packet...");
 				size_buffer = len_wan;
 				memcpy(data_buffer, buf_wan, size_buffer);	//复制数据

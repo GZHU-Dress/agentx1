@@ -31,7 +31,7 @@ void help(void) { //显示帮助相关信息
 void config(int argc, char **argv) { //配置
 	about(); //输出软件产品相关信息
 	promiscuous = 0;	//混杂模式
-	dhcp_wan = 0; //不使用0，之后1，两次2，之前3
+	dhcp_wan = 0; //不使用0，使用1
 	ip_wan = 0;
 	netmask_wan = 0;
 	gateway_wan = 0;
@@ -65,15 +65,8 @@ void config(int argc, char **argv) { //配置
 		case 'a': //dhcp
 			if (strcmp("NONE", optarg) == 0) {
 				dhcp_wan = 0;
-			} else if (strcmp("AFTER", optarg) == 0) {
-				dhcp_wan = 1;
-			} else if (strcmp("BETWEEN", optarg) == 0) {
-				dhcp_wan = 2;
-			} else if (strcmp("BEFORE", optarg) == 0) {
-				dhcp_wan = 3;
 			} else {
-				printf("The DHCP mode %s is invalid, so abort!\n", optarg);
-				opterr = 2;
+				dhcp_wan = 1;
 			}
 			break;
 		case 'i': //ip
@@ -143,22 +136,8 @@ void config(int argc, char **argv) { //配置
 		printf("LAN and WAN\n");
 		break;
 	}
-	printf("\tDHCP function: ");
-	switch (dhcp_wan % 4) { //比较dhcp
-	case 0: //关闭
-		printf("Disabled\n");
-		print_wan(); //取出并打印地址
-		break;
-	case 1: //之后
-		printf("After authentication\n");
-		break;
-	case 2: //两次
-		printf("Between authentications\n");
-		break;
-	case 3: //之前
-		printf("Before authentication\n");
-		break;
-	}
+	printf("\tDHCP function: %s", dhcp_wan == 0 ? "Off" : "On");
+
 	if (strlen(account_wan) > 1) { //设置了account
 		printf("\tAccount: %s\n", account_wan);
 	}
