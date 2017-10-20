@@ -136,7 +136,7 @@ void config(int argc, char **argv) { //配置
 		printf("LAN and WAN\n");
 		break;
 	}
-	printf("\tDHCP function: %s", dhcp_wan == 0 ? "Off" : "On");
+	printf("\tDHCP function: %s\n", dhcp_wan == 0 ? "Off" : "On");
 
 	if (strlen(account_wan) > 1) { //设置了account
 		printf("\tAccount: %s\n", account_wan);
