@@ -1,18 +1,21 @@
-OBJS = Object/agentx1.o Object/control_lan.o Object/control_wan.o Object/handle_packet.o
-LDFLAGS := $(LDFLAGS) -lpthread
+NAME = agentx1
+EXEC = $(NAME)
+RM ?= rm -f
 
-agentx1: objdir $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o agentx1
-objdir:
-	mkdir -p Object
-Object/agentx1.o: Source/agentx1.c Source/agentx1.h
-	$(CC) $(CFLAGS) -c Source/agentx1.c -o Object/agentx1.o
-Object/control_lan.o: Source/control_lan.c Source/agentx1.h
-	$(CC) $(CFLAGS) -c Source/control_lan.c -o Object/control_lan.o
-Object/control_wan.o: Source/control_wan.c Source/agentx1.h
-	$(CC) $(CFLAGS) -c Source/control_wan.c -o Object/control_wan.o
-Object/handle_packet.o: Source/handle_packet.c Source/agentx1.h
-	$(CC) $(CFLAGS) -c Source/handle_packet.c -o Object/handle_packet.o
+OBJS = src/agentx1.o src/control_lan.o src/control_wan.o src/handle_packet.o
+SRCS = $(OBJS:.o=.c)
+
+CFLAGS += -W -Wall
+LDFLAGS += -lpthread
+LDLIBS += -lpthread
+
+.c.o:
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+
 clean:
-	rm -f Object/* agentx1
-
+	-@$(RM) $(OBJS) $(EXEC)
