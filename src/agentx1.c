@@ -39,7 +39,7 @@ void config(int argc, char **argv) { //配置
 	account_wan = "\0";	//用户绑定账户
 	opterr = 0; //错误操作
 	char *lan = "br-lan";
-	char *wan = "br-wan";
+	char *wan = "eth0.2";
 	int option; //操作符
 	while ((option = getopt(argc, argv, "hL:W:p:u:a:i:n:g:d:")) != -1) { //大写参数是对工作有关键性影响的
 		switch (option) { //操作符
