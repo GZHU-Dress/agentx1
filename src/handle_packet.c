@@ -92,7 +92,7 @@ void get_hello(unsigned char *data) { //从hello得到中继变量
 }
 int set_identity(unsigned char *data, int size) {	//修改用户名
 	unsigned char account_length = strlen(account_wan);	//新名字的长度
-	if (account_length > 1) {	//如果设置了用户名参数
+	if (account_length > 0) {	//如果设置了用户名参数
 		unsigned short int organ_head_length;	//包头长度
 		memcpy(&organ_head_length, data + 0x10, 2);	//得到长度
 		organ_head_length = ntohs(organ_head_length);	//转换字节序

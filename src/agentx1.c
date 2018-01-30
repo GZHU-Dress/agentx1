@@ -143,7 +143,7 @@ void config(int argc, char **argv) { //配置
 	}
 	printf("\tDHCP function: %s\n", dhcp_wan == 0 ? "Off" : "On");
 
-	if (strlen(account_wan) > 1) { //设置了account
+	if (strlen(account_wan) > 0) { //设置了account
 		printf("\tAccount: %s\n", account_wan);
 	}
 	if (strlen(cmd_success) > 0) {
