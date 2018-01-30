@@ -46,6 +46,7 @@ unsigned char server_wan[6]; //初始服务器地址
 //PACKET
 int size_buffer;
 unsigned char data_buffer[1024]; //临时包
+char *cmd_success;
 //MAIN
 void error(char *message); //出错退出
 //LAN

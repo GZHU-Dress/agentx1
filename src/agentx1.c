@@ -8,7 +8,7 @@
  */
 #include "agentx1.h"
 void about(void) { //显示软件产品相关信息
-	puts("Agent X One [Version: 6]"); //XXX 发布之前改版本号
+	puts("Agent X One [Version: 6.1]"); //XXX 发布之前改版本号
 	puts("Homepage: http://bitbucket.org/CrazyBoyFeng/agentx1"); //为了保证可持续的反馈与维护，请不要修改网址
 	puts("GNU General Public License: http://gnu.org/licenses/gpl.html"); //衍生请不要修改协议
 	puts("Copyright (C) 2013-2015 CrazyBoyFeng. All rights reserved."); //狂男风
@@ -25,6 +25,7 @@ void help(void) { //显示帮助相关信息
 	puts("\t[-g <address>] Binding (default 0.0.0.0) gateway");
 	puts("\t[-d <address>] Binding (default 0.0.0.0) DNS");
 	puts("\t[-u <account>] Binding (default by client) account");
+	puts("\t[-c <command>] Command to execute after EAP-Success");
 	puts(
 			"For more information, visit: http://bitbucket.org/CrazyBoyFeng/agentx1/wiki");
 }
@@ -37,11 +38,12 @@ void config(int argc, char **argv) { //配置
 	gateway_wan = 0;
 	dns_wan = 0;
 	account_wan = "\0";	//用户绑定账户
+	cmd_success = "\0";
 	opterr = 0; //错误操作
 	char *lan = "br-lan";
 	char *wan = "eth0.2";
 	int option; //操作符
-	while ((option = getopt(argc, argv, "hL:W:p:u:a:i:n:g:d:")) != -1) { //大写参数是对工作有关键性影响的
+	while ((option = getopt(argc, argv, "hL:W:p:u:a:i:n:g:d:c:")) != -1) { //大写参数是对工作有关键性影响的
 		switch (option) { //操作符
 		case 'L': //lan
 			lan = optarg;
@@ -100,6 +102,9 @@ void config(int argc, char **argv) { //配置
 		case 'u': //用户账户
 			account_wan = optarg;
 			break;
+		case 'c':
+			cmd_success = optarg;
+			break;
 		case 'h': //help
 			opterr = -1;
 			break;
@@ -140,6 +145,9 @@ void config(int argc, char **argv) { //配置
 
 	if (strlen(account_wan) > 1) { //设置了account
 		printf("\tAccount: %s\n", account_wan);
+	}
+	if (strlen(cmd_success) > 0) {
+		printf("\tSuccess command: %s\n", cmd_success);
 	}
 }
 void finish(void) { //进程关闭回调

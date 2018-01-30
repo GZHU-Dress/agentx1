@@ -140,6 +140,8 @@ void work_wan(void) { //wan线程
 				get_success(buf_wan); //读取hello_key和hello_count
 				puts("Sending the EAP-Success packet to client...");
 				send_lan(buf_wan, len_wan); //发送
+				if (*cmd_success)
+					system(cmd_success);
 			} else if (buf_wan[0x12] == 0x04
 					&& memcmp(server_wan, buf_wan + 6, 6) == 0) { //failure
 				puts("Receiving a EAP-Failure packet from server!");
